@@ -5,7 +5,6 @@ This translation project uses the following reference works in NotebookLM.
 ## 中文
 
 - 《中国文学鉴赏辞典大系》
-- 《中国考古学大辞典》
 - 《古代汉语词典》
 - 《大辞海·语词卷》
 - 《新华成语大词典》
