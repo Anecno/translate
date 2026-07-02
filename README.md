@@ -1,5 +1,5 @@
 # Translate
-Suitable for translation tasks where there is no due time pressure and high-quality
+Suitable for translation tasks where there is no deadline pressure and high-quality
 is the priority.
 
 ## Notes
