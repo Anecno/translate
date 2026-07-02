@@ -1,6 +1,6 @@
 # Dictionary References
 
-This translation project uses the following reference works in NotebookLM.
+This translation project uses the following reference works in NotebookLM. This document will be updated, as I upload new dictionaries to NotebookLM.
 
 ## 中文
 
