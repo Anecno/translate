@@ -588,3 +588,107 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   changes that member.
 - If a concrete PUA-related output/channel problem appears, handle it locally
   for that member/channel.
+
+## 2026-07-05 Research Intake Guardrail: Audience And Medium Before Style Rules
+
+- Translation research, Deep Research reports, web-access captures, social
+  platform notes, and member reports are evidence, not automatic rules. Before
+  using them in any translate-v2 prompt, style sheet, prep package, baton brief,
+  or final report, classify each point as `MUST_RECORD`,
+  `PENDING_STYLE_EVIDENCE`, or `MUST_NOT_RECORD`.
+- A point can become `MUST_RECORD` only when it is a user rule/correction,
+  a source-authoritative fact, a verified recurring failure gate, or a direct
+  artifact contract. A member-only recommendation, social-platform sample,
+  edition-specific publishing habit, or provisional style suggestion stays
+  `PENDING_STYLE_EVIDENCE` unless the user explicitly adopts it for the active
+  task.
+- Always separate audience and medium before applying style advice: source
+  manuscript, embedded foreign-language dialogue inside a Chinese novel,
+  Japanese-reader publication, character list, audiobook/subtitle/voice acting,
+  editorial style sheet, terminology memo, official documents, and social/admin
+  identity use are different surfaces. Advice from one surface may be cited as
+  background for another, but it may not override the active surface.
+- For Chinese names in Japanese translation research, keep three layers
+  separate: written form, reading, and ruby/furigana. General reusable evidence:
+  Chinese names in Japanese prose often use Japanese-usable kanji forms rather
+  than raw simplified Chinese or blind traditionalization; readings may be
+  Japanese on-yomi or Chinese local-sound katakana depending on medium and
+  style sheet; ruby frequency is an editorial decision, not the name
+  translation itself.
+- Project-specific override: when `antique-game-within-game` is active, its
+  user-locked Chinese-reader rule wins. For 《古董局中局》 embedded Japanese
+  dialogue, the current default is no ruby/furigana/pinyin/phonetic assistance
+  in body text; reading information belongs in prep notes, term memos, or
+  user-requested appendices unless the user opens a specific exception.
+- Anti-rule: do not convert a crooked or overbroad research report into a
+  locked style rule merely because it contains useful facts. Do not turn
+  “Japanese readers may benefit from ruby/person lists” into “every Chinese
+  novel translation must add ruby,” and do not turn Chinese students'
+  real-name/visa/name-card reading choices from social platforms into
+  publishing or fiction-dialogue rules.
+- Required prompt/report wording when research is used: name the surface
+  (`current Chinese novel body`, `hypothetical Japanese-reader edition`,
+  `character list`, `audiobook`, etc.), the status
+  (`LOCKED_USER`, `PENDING_STYLE_EVIDENCE`, or `MUST_NOT_RECORD`), and the
+  blocker that prevents over-application. Missing that disposition makes the
+  research unsafe as downstream relay evidence.
+
+## 2026-07-05 Dialogue Spoken-Form Guardrail: Chinese-Reader vs Japanese-Reader Surfaces
+
+- `USER_SOURCE`: 2026-07-05 user clarification after Chinese-name/ruby
+  research: in the user's current fiction, Japanese personal names have so far
+  used Japanese readings. If the user later wants a Chinese name in Japanese
+  dialogue to be pronounced in Chinese local sound, a Chinese-reader work whose
+  Japanese dialogue is followed by Chinese translation may write katakana-only,
+  not corresponding Japanese kanji plus ruby. For a Japanese-reader work, also
+  in character dialogue, the preferred local-sound surface is
+  `フー・チンタオ（胡錦濤）`, not `胡錦濤（フー・チンタオ）`.
+- `EXACT_CLAIM`: both cases are character dialogue. In dialogue, the text
+  outside parentheses is what is spoken/read; parenthetical text is identity
+  explanation or annotation. Chinese-reader embedded dialogue does not need
+  ruby/furigana/pinyin/phonetic aid to teach pronunciation when a Chinese
+  translation follows. If local sound is intended, write the spoken sound
+  directly as the dialogue surface.
+- `DERIVED_RULE`: Any translate-v2 prompt, style sheet, prep package, baton
+  brief, or final report that discusses Chinese names, readings, ruby, or
+  katakana in dialogue must first classify the audience surface:
+  `Chinese-reader embedded dialogue`, `Japanese-reader dialogue edition`, or
+  `non-dialogue reference/annotation`.
+  - For Chinese-reader embedded dialogue with following Chinese translation:
+    default remains no ruby/furigana/pinyin/phonetic assistance in body text;
+    current/default names keep their established Japanese readings unless the
+    user explicitly opens a local-sound exception. If the user explicitly wants
+    Chinese local sound, write the spoken form directly as katakana-only
+    dialogue text, e.g. `フー・チンタオ`.
+  - For Japanese-reader character dialogue where Chinese local sound is the
+    intended spoken sound: write katakana outside and kanji identity inside,
+    e.g. `フー・チンタオ（胡錦濤）`.
+  - `胡錦濤（フー・チンタオ）` belongs to reference/news/annotation-style surfaces
+    only when that is explicitly the desired medium. In dialogue, it puts kanji
+    in the spoken slot and defaults the line toward Japanese kanji reading.
+- `ANTI_RULE / NOT_AUTHORIZED`: Do not globalize katakana-only to all names; do
+  not add ruby/furigana to Chinese-reader body text merely because a name has a
+  Chinese local sound; do not use kanji-outside plus kana parenthetical for
+  local-sound dialogue unless the user explicitly asks for a non-dialogue
+  reference/annotation style; do not treat this as a bibliography, character
+  list, news, or official-identity rule.
+- `SCOPE/STATUS`: `MUST_RECORD` for translate-v2 dialogue style decisions,
+  prompts, prep packages, member instructions, reports, and reviews involving
+  Chinese names/readings/ruby/katakana in character dialogue. For
+  `antique-game-within-game`, the project-specific locked rule in that skill
+  remains the direct project authority; this section is the cross-translation
+  reusable surface gate.
+- `MACHINE/MANUAL PREFLIGHT`: Before sending or accepting any translate-v2
+  surface that discusses Chinese names in dialogue, state: audience surface,
+  spoken-form order, whether the user explicitly requested local sound, and the
+  anti-rule that prevents ruby or kanji-outside leakage. The execution gate in
+  `<tools-root>/scripts/translate_v2_contract_gate.py` must block the bad fixtures
+  below and pass the good fixtures below.
+- `BAD FIXTURE / EXPECT BLOCKED`: Chinese-reader embedded dialogue says
+  Chinese local sound should be written as Japanese kanji plus ruby or
+  `胡錦濤（フー・チンタオ）`; Japanese-reader character dialogue intending Chinese
+  local sound writes `胡錦濤（フー・チンタオ）` as the line.
+- `GOOD FIXTURE / EXPECT OK`: Chinese-reader embedded dialogue keeps body text
+  no-ruby and, only when the user explicitly wants Chinese local sound, writes
+  katakana-only spoken text such as `フー・チンタオ`; Japanese-reader character
+  dialogue intending Chinese local sound writes `フー・チンタオ（胡錦濤）`.
