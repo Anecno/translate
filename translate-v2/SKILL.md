@@ -1,26 +1,22 @@
 ---
 name: translate-v2
-description: "Codex workflow localized multi-agent serial relay translation skill. Trigger only for explicit translation work: '翻译这段', '把 X 翻成 Y', 'translate to', '古文今译', '汉译日', or a source text/file plus target language. Do not trigger for discussing the skill/spec, implementing Phase work, code changes, or general terminology explanations."
+description: "Codex fork localized multi-agent serial relay translation skill. Trigger only for explicit translation work: '翻译这段', '把 X 翻成 Y', 'translate to', '古文今译', '汉译日', or a source text/file plus target language. Do not trigger for discussing the skill/spec, implementing Phase work, code changes, or general terminology explanations."
 metadata:
-  status: public-draft
+  status: active
   phase: 1
-  version: "0.3.12-public-original-preserved"
+  version: "0.3.12-codex-localized-author-reference-20260527"
   current_spec: spec-v0.3.12.md
-  localized_from: <upstream-skill-source>
-  localized_for: <codex-runtime-dir>
-  updated: 2026-06-29
+  localized_from: <skill-root>
+  localized_for: <codex-config>
+  updated: 2026-05-27
 ---
 
 # translate-v2 — Codex Fork Entry
 
-This is a public Codex workflow copy of the upstream `translate-v2` skill. The core
+This is a Codex-localized copy of the CC-side `translate-v2` skill. The core
 translation algorithm remains `spec-v0.3.12.md`; this file only adapts the
 runtime controller, paths, memory boundaries, and whiteboard protocol for the
-Codex-led workflow.
-
-Project companion boundary: Antique Game Within Game / 《古董局中局》 may provide
-canon and context; `translate-v2` remains authoritative for relay topology,
-scoring, checkpoints, convergence, and artifact schemas.
+Codex-led fork.
 
 ## 0. Trigger Boundary
 
@@ -44,7 +40,7 @@ Do not trigger for:
 Before running a translation relay, read:
 
 1. `NOTES.md` if present.
-2. This `SKILL.md` for Codex workflow runtime differences.
+2. This `SKILL.md` for Codex fork runtime differences.
 3. `spec-v0.3.12.md` for the translation algorithm and output schemas.
 
 Do not use other files in this directory as execution authority unless the
@@ -57,7 +53,7 @@ pollution risks, never to override `NOTES.md` + this `SKILL.md` +
 
 Precedence rule: when `spec-v0.3.12.md` conflicts with this file about actor
 names, relay order, whiteboard paths, memory access, or report ownership, this
-Codex workflow entrypoint wins. The spec remains authoritative for the translation
+Codex fork entrypoint wins. The spec remains authoritative for the translation
 method, scoring schema, checkpoint logic, and artifact contents.
 If startup `AGENTS.md` rules mention translate-v2 and conflict with this
 entrypoint about runtime topology or artifact schema, use this entrypoint and
@@ -72,7 +68,7 @@ merge, reorder, or use one to perform the other's function.
 
 Gate order rule: for any translate-v2 prompt, dispatch, user-facing artifact,
 final answer, or Antique translation-prep related file write, run
-`scripts/translate_v2_contract_gate.py` before web/whiteboard preflight,
+`<tools-root>/scripts/translate_v2_contract_gate.py` before web/whiteboard preflight,
 artifact lint, or file delivery. Generic preflight success is not sufficient
 for translate-v2; the skill-specific gate must pass first.
 For 《古董局中局》 translation tasks, any file write during prep or output must
@@ -82,12 +78,12 @@ explicit accident/review work with no translation/prompt/dispatch.
 Language-surface gate: 小D/本地 prep-helper 的 `译前上下文包` and every member
 raw capture are formal relay inputs, not informal scratch. Before a prep
 package is sent to the user for audit, run
-`scripts/translate_v2_artifact_lint.py --type prep-package <path>`.
+`<tools-root>/scripts/translate_v2_artifact_lint.py --type prep-package <path>`.
 Immediately after each baton raw capture, run
-`scripts/translate_v2_artifact_lint.py --type baton-raw <path>`
+`<tools-root>/scripts/translate_v2_artifact_lint.py --type baton-raw <path>`
 before using that raw as N-1/N-2, round archive material, checkpoint evidence,
 or final-report evidence. For Antique Game tasks, also run
-`scripts/lint_chinese_main_artifact.py`
+`the Antique Game Within Game companion skill/scripts/lint_chinese_main_artifact.py`
 on prep/raw Markdown that will feed the relay. These files must use Chinese
 main narrative for analysis, wrapper headings, explanations, scores, reasons,
 and convergence probes; target-language candidates, schema keys, model names,
@@ -95,7 +91,7 @@ paths, and author reference samples may remain in their required languages.
 If this gate blocks, repair the wrapper or re-request a Chinese-main baton;
 do not carry the blocked raw forward as formal evidence.
 
-Do not read Claude Code `claude-mem` or `<external-agent-private-memory>` as part
+Do not read Claude Code `claude-mem` or `<claude-config>/projects/.../memory` as part
 of normal Codex operation. If old CC memory files are needed as historical
 evidence for a specific translation run, ask the user first and treat that as an
 explicit bridge request.
@@ -105,28 +101,28 @@ explicit bridge request.
 Controller:
 
 - Codex is the main conductor in this fork.
-- The old upstream spec often says "CC"; in this localized runtime read that as
+- The old CC-side spec often says "CC"; in this localized runtime read that as
   "the current conductor", meaning Codex, unless the text is explicitly about
   the Anthropic member as a reviewer.
-- Do not write to the CC-led whiteboard at `<legacy-collab-workspace>` or
-  `<legacy-whiteboard-thread-dir>` unless the user explicitly asks to back-port.
+- Do not write to the CC-led whiteboard at `<home>/whiteboard-workspace` or
+  `<home>/whiteboard/threads` unless the user explicitly asks to back-port.
 
 Primary whiteboard paths:
 
-- Threads: `<collab-thread-dir>`
-- Task board and deliverables: `<collab-workspace>`
-- Public Codex workflow archives: `<collab-archive-dir>`
-- Round reply drops: `<relay-raw-dir>`
-- Web relay scratch prompt: `<relay-prompt-scratch>`
-- User uploads: `<relay-upload-dir>`
+- Threads: `<codex-config>/whiteboard/threads`
+- Task board and deliverables: `<codex-config>/whiteboard-workspace`
+- Public Codex fork archives: `<codex-config>/whiteboard-workspace/archive`
+- Round reply drops: `<reply-drop>`
+- Web relay scratch prompt: `<desktop>/prompt-codex.txt`
+- User uploads: `<upload-drop>`
 
 Final translation outputs:
 
-- Primary output directory: `<translation-output-dir>/`
+- Primary output directory: `<translate-output-root>/`
 - Project-specific override: when a task also triggers the
-  `antique-game-within-game` skill for 《古董局中局》, final translation-only files
+  `the Antique Game Within Game companion skill` skill for 《古董局中局》, final translation-only files
   and final analysis reports must be written under the chapter subdirectory:
-  `<translation-output-dir>/《古董局中局》/<部章>/`.
+  `<translate-output-root>/《古董局中局》/<部章>/`.
   Existing local pattern uses compact chapter folders such as `第一部第三章`,
   `第一部第四章`, and `第一部第八章`. Create the matching folder if missing.
   These examples are not defaults: derive `<部章>` from the current target
@@ -158,16 +154,16 @@ Final translation outputs:
 - Translation-only files contain only the final translated text.
 - Reports and long-term translation artifacts also live under the same primary
   output directory unless the user explicitly asks for another location.
-- Optional convenience mirrors such as `<translation-output-dir>/Translation.txt`
+- Optional convenience mirrors such as `<desktop>/Translation.txt`
   should be created only when explicitly useful or requested.
 
 ## 3. Relay Topology
 
-The upstream canonical relay was:
+The CC-side canonical relay was:
 
 `哈士奇 -> 小D -> Codex -> 逗比 -> CC`
 
-In the Codex-led workflow, the user has swapped the Codex and CC positions. Use
+In the Codex-led fork, the user has swapped the Codex and CC positions. Use
 this operational mapping:
 
 1. `哈士奇` via `ask_husky`: first-baton review and polish.
@@ -194,11 +190,30 @@ Default runtime channel:
   for that task, for example `CLI 端接力`, `CLI 版接力链`, or `走 CLI`.
 - Do not ask the user to choose the runtime channel when they have not
   specified one; record the default as `网页版接力`.
-- CLI mode uses the normal Codex workflow chain above.
-- Web Relay Mode keeps the same baton order and translation algorithm, but maps
-  the execution endpoints to Web counterparts:
-  `哈士奇 -> 哈基米`, `小D -> 老D`, `CC -> 小克`,
-  `逗比 -> 包子`, `Codex conductor/final baton -> 小G`.
+- CLI mode uses the normal Codex fork chain above.
+- Web/Hybrid Relay Mode keeps the same baton order and translation algorithm,
+  but maps the execution endpoints to the current manual mixed chain:
+  `哈士奇 -> 哈基米`, `小D -> 小D`, `CC -> 小克`,
+  `Codex web/member baton -> 小G`, `Qoder final web-access baton -> Qoder`.
+  User correction on 2026-07-05: 老D / DeepSeek Web is no longer valid as the
+  second baton for dictionary- or web-search-dependent translation relay,
+  because the route lacked usable联网/search mode while producing apparent
+  lookup claims. User correction later on 2026-07-05 supersedes the default
+  chain again: future ordinary Web/Hybrid Relay prompts must use
+  `哈基米 -> 小D -> 小克 -> 小G -> Codex`, defaulting to manual relay. User
+  correction on 2026-07-06 supersedes the default chain again: future ordinary
+  Web/Hybrid Relay prompts must use `哈基米 -> 小D -> 小克 -> 小G -> Qoder`,
+  defaulting to manual relay. Codex exits the relay-chain member slot and keeps
+  only conductor duties such as prompt packaging, linting, raw filing, round
+  archive assembly, checkpoint/divergence/final-report ownership, and user-side
+  synthesis unless the user explicitly asks Codex to participate as a member.
+  包子 exits
+  the ordinary default chain unless the user explicitly names it for a task.
+  Current Part1-09 R1 is a transitional exception: the already archived 老D
+  R1B2 is not voided and may be used as N-1 for 小克 with capability caveats.
+  Old `哈基米 -> 老D -> 小克 -> 包子 -> 小G` and
+  `哈基米 -> 小D -> 小克 -> 包子 -> 小G` may appear only as rejected/deprecated
+  history or the explicitly marked current R1 exception.
 - 哈基米 / Gemini Web first baton must use the target-language NotebookLM
   dictionary when one is available. For uncertain translation choices
   (vocabulary, collocation, idiom, register, key terms, or important
@@ -216,11 +231,25 @@ Default runtime channel:
   the source-language dictionary merely because it is available, and do not let
   web search override user/source/context authority for story facts or add
   unsupported meaning beyond the source.
-- In Web Relay Mode, 小G is the fifth ordinary relay baton and produces the
-  final-baton review/polish candidate. Codex remains the conductor but does not
-  substitute its own local translation baton for 小G. After 小G's raw output is
-  captured, Codex performs the round archive, checkpoint judgment, divergence
-  analysis, final judging/reporting, and user-facing synthesis.
+- User correction on 2026-07-05: the NotebookLM target-language dictionary
+  requirement is mandatory for 哈基米 / Gemini Web as the first baton only. Do
+  not force 小D, 小克, 包子, 小G, or later non-Hakimi batons to use NotebookLM
+  dictionaries. Those batons should exploit their own channel strengths:
+  ordinary web search, Japanese dictionary sites, corpora, institutional/legal
+  usage examples, terminology platforms, or other accessible sources. They may
+  audit 哈基米's lookup log, but if their channel cannot access NotebookLM they
+  must write that limitation instead of fabricating dictionary evidence.
+- In Web/Hybrid Relay Mode, 小G is the fourth ordinary relay baton and Qoder is
+  the fifth ordinary relay baton. Qoder must use its web-access route/skill for
+  the fifth-baton research pass: inspect hard-to-reach source-language and
+  target-language web/social platforms, including real-user/social platforms
+  such as 小红书 where relevant, and query all disputed segment issues
+  comprehensively. Qoder must list the full research/check record, not a sample
+  or hidden "checked but omitted" summary. Codex as conductor then writes the
+  round archive, divergence analysis if any, final judging/reporting, and
+  user-facing synthesis from Qoder's captured raw. Do not stop at a normal
+  checkpoint between Qoder's web-access pass and Codex's round archive unless
+  the user explicitly asks.
 - Web Relay Mode is not web Deep Research. Deep research remains an explicit
   checkpoint/startup action and must not be smuggled into ordinary relay
   batons.
@@ -246,16 +275,16 @@ Keep the spec's serial relay principle:
   `spec-v0.3.12.md`.
 - The main Codex conductor may inspect the whole trajectory when acting as the
   CLI final baton and when producing reports.
-- In Web Relay Mode, Codex inspects the whole trajectory only after 小G's
+- In Web Relay Mode, Codex inspects the whole trajectory only after Qoder's
   fifth-baton output has been captured; Codex's post-baton duties are
   archiving, checkpointing, divergence analysis, final judging/reporting, and
-  user decision handling, not replacing 小G's relay turn.
+  user decision handling, not replacing Qoder's relay turn.
 - Where `spec-v0.3.12.md` assigns final-baton duties, round checkpointing,
   even-round divergence analysis, final blind judging, BWS comparison, or final
   reporting to "CC", read that as "Codex conductor" in this fork, except that
-  in Web Relay Mode the fifth relay baton itself is 小G while Codex keeps the
+  in Web Relay Mode the fifth relay baton itself is Qoder while Codex keeps the
   non-baton conductor/report-owner duties.
-- Where `spec-v0.3.12.md` defines Web Relay Mode, preserve this Codex workflow's
+- Where `spec-v0.3.12.md` defines Web Relay Mode, preserve this Codex fork's
   swapped relay order and only replace the endpoint type. The user still owns
   the runtime-channel choice.
 
@@ -268,7 +297,7 @@ Round archives:
   and rerun the lint; if the member answer itself is not Chinese-main, request
   a restatement or mark the baton invalid instead of silently normalizing it.
 - At the end of each round, write one combined archive under:
-  `<relay-raw-dir>/YYYYMMDD-HHMMSS-translate-r{N}-{topic}.md`
+  `<reply-drop>/YYYYMMDD-HHMMSS-translate-r{N}-{topic}.md`
 - Report the path, byte count, and a one-sentence judgment to the user; do not
   inline every baton transcript in the main chat.
 
@@ -282,7 +311,7 @@ Checkpoint:
   current round/baton, latest candidate, locked user decisions, open disputes,
   required next baton prompt inputs, round archive path, and any research TODOs.
 - Before changing tabs or after a heavy research pass, write a handover snapshot
-  under `<handover-dir>/`.
+  under `<work-root>/20 Translate-v2/handover/`.
 
 Final-output gate:
 
@@ -346,12 +375,12 @@ Collect these before the first baton. Ask only for missing required items.
 
 ## 6. Output Schema
 
-Follow the upstream spec exactly for final artifacts:
+Follow the CC-side spec exactly for final artifacts:
 
 - Translation-only output contains only the final translated text. By default,
   write it to a new task-specific file under the selected output directory, not
   to the legacy fixed `Translation.txt` name. For 《古董局中局》 tasks that also
-  use `antique-game-within-game`, the selected output directory is the matching
+  use `the Antique Game Within Game companion skill`, the selected output directory is the matching
   `output/《古董局中局》/<部章>/` chapter folder.
 - Translation report output contains trajectory, rationale, syntax/morphology
   analysis, statistics, sound/cadence or prosody notes when applicable,
@@ -363,7 +392,7 @@ Follow the upstream spec exactly for final artifacts:
   combined archive; a separate divergence report file is optional rather than
   mandatory unless the user asks for one or readability requires it.
 - Syntax/morphology analysis must follow `spec-v0.3.12.md`
-  `current syntax/morphology rule`: do not write a summary-only version. Include
+  `v0.3.12-hotfix-20260515`: do not write a summary-only version. Include
   sentence overview, phrase/particle/honorific breakdown, dependency JSON,
   key lexical morphology, strategy tags, and direct-vs-conversion audit. A
   short source text means finer granularity, not a shorter analysis.

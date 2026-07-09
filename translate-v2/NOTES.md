@@ -42,7 +42,7 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   obligations: raw capture, one combined round archive, user checkpoint,
   R2/R4/R6 divergence-analysis gate, and final-output/report gate.
 - A round archive is invalid unless it can stand alone as a handoff input:
-  `<relay-raw-dir>` path, five-baton trajectory, raw capture
+  `<reply-drop>` path, five-baton trajectory, raw capture
   index, convergence index, checkpoint state, resume state, next-step inputs,
   Chinese main narrative, and syntax/morphology analysis when a candidate is
   presented.
@@ -68,14 +68,14 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   schema keys、状态常量、模型名、路径、必要英文参考样本可保留。缺这一层时不得把 prep
   包转交用户审阅，不得把单棒 raw 用作下一棒输入、round archive、checkpoint 或最终报告依据。
 - After writing any formal Markdown artifact, run
-  `scripts/translate_v2_artifact_lint.py --type <type>
+  `<tools-root>/scripts/translate_v2_artifact_lint.py --type <type>
   <path>` before using it as evidence, N-1/N-2, checkpoint state, divergence
   analysis, or final report. Valid `<type>` values are `prompt-package`,
   `prep-package`, `baton-raw`, `round-archive`, `checkpoint`,
   `divergence-report`, and `final-report`.
   Run `--type prep-package` on 小D/本地译前上下文包；run `--type baton-raw`
   immediately after each member raw capture. For Antique Game tasks, also run
-  `scripts/lint_chinese_main_artifact.py`
+  `the Antique Game Within Game companion skill/scripts/lint_chinese_main_artifact.py`
   on prep/raw Markdown when it will feed the relay. If either lint blocks,
   repair the wrapper or re-request a Chinese-main baton before using it.
   For even-round combined archives that embed R2/R4/R6 divergence or
@@ -92,8 +92,8 @@ This file is public-maintained and should not be overwritten by upstream syncs w
 - Treat this subsection as the executable report contract. The matching lint
   type names are `prompt-package`, `prep-package`, `baton-raw`,
   `round-archive`, `checkpoint`, `divergence-report`, and `final-report`; use exactly these values with
-  `scripts/translate_v2_artifact_lint.py --type`.
-- Formal relay prompt / dispatch package must include: current Codex workflow baton
+  `<tools-root>/scripts/translate_v2_artifact_lint.py --type`.
+- Formal relay prompt / dispatch package must include: current Codex-fork baton
   order, N-1/N-2 context rule, §3.1 principles at the top, three-layer
   `scores.language` / `scores.literary` / `scores.cultural` + `aggregate`,
   raw-capture requirement, combined round-archive requirement, user checkpoint
@@ -102,7 +102,15 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   章节报告扫描状态、用户审阅状态，并保持中文主叙述。
 - 单棒 raw capture 必须包括：raw 落档身份、成员、棒次、候选、N-1/N-2 审查或修订理由、
   三层评分结构、收敛探针，并保持中文主叙述。
-- Combined round archive must include: `<relay-raw-dir>` path,
+- Codex 如果也是接力链成员之一，它的 baton raw 必须和其他成员同格式同骨架，而不是
+  conductor 摘要、争议点摘录、web evidence raw 或 round archive 替代物。Codex 成员 raw
+  至少必须包括：N-1/N-2 审计、完整候选译文（能让下一棒直接评价）、相对上一棒的继承/必须改项或
+  争议点矩阵、三层评分、收敛探针、明确 next-baton handoff。若 Codex 是某轮最后一棒，
+  下一轮第一棒的 handoff 必须写明它要评价的 N-1/N-2，例如当前 Web/Hybrid R2B1 哈基米
+  应评价 `N-1 = Codex R1B5` 与 `N-2 = 小G R1B4`。反向阻断：不得把轮末合并档、
+  web-access 证据 raw、几句样例或争议摘要当作 Codex 成员报告；不得让下一棒没有可评价的
+  Codex 完整候选。
+- Combined round archive must include: `<reply-drop>` path,
   all five baton outputs in baton order, raw capture index, convergence index,
   checkpoint state, resume state, next-step inputs, Chinese main narrative, and
   syntax/morphology analysis whenever a candidate is presented for review.
@@ -131,12 +139,126 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   direct-vs-conversion audit, translation highlights, sound/prosody notes,
   research TODO or `N/A`, compliance self-check, artifact list, and Chinese
   main narrative.
+- 2026-07-04 bilingual Antique rule: for 《古董局中局》 Japanese translation tasks
+  where the user gives Chinese source/input plus English translation/reference
+  points, the final `Translation-report.md` must include a dedicated
+  `english_section. It must preserve all material points from
+  the English side, divergence axes against the Chinese source/input, and how
+  each point affected or did not affect the Japanese final choices. Do not
+  compress the English side into "style only", omit it from the final report,
+  or treat it as subordinate to Chinese source text. This section is later KB
+  backfill input, but the primary capture point is before 小D prepares the
+  `译前上下文包`.
 - Every artifact type that presents a candidate or final translation must use
   the full syntax/morphology minimum from `spec-v0.3.12.md`, not a title-only
   placeholder: sentence overview, approximate literal back-translation,
   phrase/particle/honorific breakdown, dependency JSON with source alignment,
   lexical morphology table, strategy tags, and direct-vs-conversion audit.
   Short source text requires finer granularity, not a shorter report.
+- USER_SOURCE 2026-07-05: after Codex tried to repair a thin round archive by
+  writing only selected "candidate/risk" syntax groups, the user corrected that
+  the requirement is `全部`, not merely `候选`: "你现在写的是'全部'吗？你什么时候
+  写过'全部'？你一直写的都是'候选'." Exact claim: for this long Part1-09 R1B5
+  line-numbered Japanese passage, syntax/morphology analysis in the round
+  archive and later final `Translation-report.md` must cover every translated
+  line, not only disputed candidates or representative risk groups. User
+  correction later in the same thread tightened the definition again: `全部`
+  does not mean a full line-number index/table; it means every line/line-group
+  must have an independent `逐行详析` detail block. Derived executable rule:
+  for each line anchor in the translated passage, include a separate
+  `逐行详析：Line X` (or exact line-group heading when the source baton itself
+  groups lines) containing at minimum `译句`, `近似直译`, `root / 依存`,
+  `构词 / 语法`, `源文锚点`, and `直译与转换审计`. Negative blocker / anti-rule:
+  do not use "候选", "主要风险簇", "代表性片段", "sample", "next-baton must
+  evaluate points", a total index table, or "key lines expanded below" as a
+  substitute for full per-line detail; do not let the final report regress to
+  selected-candidate analysis. Machine check:
+  `scripts/translate_v2_artifact_lint.py --type round-archive` and
+  `--type final-report` block the current Part1-09 R1B5 surface unless the
+  syntax section contains the `全部逐行` claim and every required line heading
+  has the six-part detail plus direct-conversion audit.
+- USER_SOURCE 2026-07-05: after the rebuilt archive still used a shallow
+  formulaic syntax/morphology shell, the user corrected that even aside from
+  source incompleteness, the syntax/morphology analysis itself was
+  unacceptable and should already have had a gate. Exact claim: `句法构词分析`
+  cannot be satisfied by a six-field table whose rows repeat generic phrases
+  such as `source-lock OK`, generic `root=疑問句/述語句`, generic particle/
+  honorific wording, or a copy-pasted Addition/Omission/Free rewriting sentence.
+  Derived executable rule: every per-line or per-line-group detail block must
+  name the actual predicate/root or sentence function for that line, cite
+  concrete target-language tokens and morphology/particle/honorific/register
+  choices, and make the direct-vs-conversion audit point to the specific source
+  anchor and translation choice under review. The overview table may summarize,
+  but it cannot contain a repeated placeholder judgment as the only "analysis."
+  For long dialogue passages, D-level line groups require source-specific
+  syntax/morphology discussion; short lines require sharper granularity, not a
+  shorter empty report. Negative blocker / anti-rule: do not pass an artifact
+  merely because it has headings for `译句 / 近似直译 / root / 构词 / 源文锚点 /
+  直译与转换审计`; do not reuse boilerplate rows, repeated root values, repeated
+  morphology cells, repeated direct-conversion audit text, or `R2 can polish`
+  placeholders as a substitute for analysis depth. Machine check:
+  `scripts/translate_v2_artifact_lint.py --type round-archive` and
+  `--type final-report` now block repeated syntax/morphology boilerplate and
+  too-thin per-line fields; the current bad rebuilt surface must report
+  `TRANSLATE_V2_ARTIFACT_LINT_STATUS=BLOCKED`, while a rebuilt archive with
+  line-specific roots, morphology, and audit cells must report OK before it can
+  be used as N-1/N-2 or handoff evidence.
+- USER_SOURCE 2026-07-06: the user explicitly extended the same `全部`
+  syntax/morphology gate to `final report`: "final report 也给我补；'全部'；
+  句法构词分析". Derived executable rule: final `Translation-report.md` for the
+  current Part1-09 / 《佛頭隨筆》 Line 161-261 passage must trigger the exact same
+  full-line and depth lint even if the report no longer mentions `Codex R1B5`
+  or a round-archive raw path. Negative blocker / anti-rule: do not rely on
+  baton labels, R1/R2 naming, or final-report skeleton headings to exempt the
+  syntax section; `第一部第九章` / `Part1-09` / `佛頭隨筆` plus Line 161/261,
+  D01-D64, `随便坐`, `无可奉告`, or `沈君段` is enough to require all line groups.
+  Machine check: `scripts/translate_v2_artifact_lint.py --type final-report`
+  applies `part109_r1b5_full_syntax_line_coverage_missing` and
+  `syntax_morphology_depth_missing` on those anchors, with bad selected-only
+  final-report fixtures BLOCKED and full line-specific syntax fixtures OK.
+- USER_SOURCE 2026-07-06: after Codex marked a rebuilt archive usable, the user
+  challenged that Codex had even fabricated the "full original text". Exact
+  failure: the rebuild script read D01-D64 source rows from a prep-backup table
+  and hand-written `FULL_SOURCE_OVERRIDES` while only using
+  `<desktop>/草稿.txt` for first/final anchor checks. Derived
+  executable rule: whenever an artifact says `全文原文`, `完整源文`,
+  `source-lock`, `complete user input`, or uses a real source-file path as source
+  evidence, the literal source text must be extracted from the actual source
+  file, same-tab JSONL, or confirmed verbatim archive text. Prep packages,
+  member raw, handover summaries, quote-only D tables, and Codex overrides may
+  provide indexes/context, but cannot become the source text itself. Negative
+  blocker / anti-rule: do not validate a source by checking only first/last
+  anchors; do not combine summary rows with hand-written overrides and label
+  them `全文原文`; do not use a contaminated rebuilt archive as N-1/N-2,
+  final-report input, or member-review evidence. Machine check: any Part1-09
+  artifact carrying `SOURCE_RECONSTRUCTION_FAILED`, `SOURCE_NOT_VERBATIM`,
+  `DO_NOT_USE_AS_N1`, or `DO_NOT_USE_AS_HANDOFF` must be BLOCKED by
+  `scripts/translate_v2_artifact_lint.py`; future rebuilds for this current
+  Part1-09事故 must either parse `<desktop>/草稿.txt` directly or
+  explicitly label derived quote tables as non-source summaries.
+- USER_SOURCE 2026-07-06: after Codex answered that R1B5 could be paired with
+  `<desktop>/草稿.txt`, the user corrected: "我不是每次翻译任务都给你
+  草稿.txt". Exact claim: `<desktop>/草稿.txt` is the concrete source
+  file for this Part1-09 accident only, not a universal translate-v2 source
+  locator. Derived executable rule: before any source-lock, full-source
+  reconstruction, round archive, final report, handoff, or member prompt that
+  needs the source text, first build a source authority inventory for the
+  current task: explicit user-provided file/path or attachment; source text
+  pasted in the same tab recovered from JSONL; confirmed verbatim Codex Tab
+  History archive for a different tab; current baton raw only for target
+  candidate text; prep/handover/member raws only for context/index unless they
+  themselves are confirmed verbatim sources. Negative blocker / anti-rule: do
+  not assume `<desktop>/草稿.txt` exists, applies, is current, or is
+  complete for other translation tasks; do not hardcode it in prompt templates,
+  scripts, reports, or future handovers as the default source file; do not
+  replace source discovery with "use 草稿.txt" except when the current task's
+  evidence explicitly names that file. Scope/status/evidence: translate-v2
+  source-lock and artifact reconstruction, MUST_RECORD; evidence is the
+  2026-07-06 Part1-09 R1B5 source-priority correction. Machine check:
+  `scripts/translate_v2_artifact_lint.py` blocks artifacts that present
+  `<desktop>/草稿.txt` as the universal/default/every-translation
+  source locator, while allowing current-run evidence that labels it as a
+  task-specific source and includes a generic source-authority discovery rule.
 
 ## 2026-05-27 Runtime Guardrail: Author Reference Samples Are Optional Dual Evidence
 
@@ -169,6 +291,110 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   unlicensed background expansion, or unanchored changes to who knows/feels/
   does what.
 
+## 2026-07-05 Research Intake Guardrail: Audience And Medium Before Style Rules
+
+- Translation research, Deep Research reports, web-access captures, social
+  platform notes, and member reports are evidence, not automatic rules. Before
+  using them in any translate-v2 prompt, style sheet, prep package, baton brief,
+  or final report, classify each point as `MUST_RECORD`,
+  `PENDING_STYLE_EVIDENCE`, or `MUST_NOT_RECORD`.
+- A point can become `MUST_RECORD` only when it is a user rule/correction,
+  a source-authoritative fact, a verified recurring failure gate, or a direct
+  artifact contract. A member-only recommendation, social-platform sample,
+  edition-specific publishing habit, or provisional style suggestion stays
+  `PENDING_STYLE_EVIDENCE` unless the user explicitly adopts it for the active
+  task.
+- Always separate audience and medium before applying style advice: source
+  manuscript, embedded foreign-language dialogue inside a Chinese novel,
+  Japanese-reader publication, character list, audiobook/subtitle/voice acting,
+  editorial style sheet, terminology memo, official documents, and social/admin
+  identity use are different surfaces. Advice from one surface may be cited as
+  background for another, but it may not override the active surface.
+- For Chinese names in Japanese translation research, keep three layers
+  separate: written form, reading, and ruby/furigana. General reusable evidence:
+  Chinese names in Japanese prose often use Japanese-usable kanji forms rather
+  than raw simplified Chinese or blind traditionalization; readings may be
+  Japanese on-yomi or Chinese local-sound katakana depending on medium and
+  style sheet; ruby frequency is an editorial decision, not the name
+  translation itself.
+- Project-specific override: when `the Antique Game Within Game companion skill` is active, its
+  user-locked Chinese-reader rule wins. For 《古董局中局》 embedded Japanese
+  dialogue, the current default is no ruby/furigana/pinyin/phonetic assistance
+  in body text; reading information belongs in prep notes, term memos, or
+  user-requested appendices unless the user opens a specific exception.
+- Anti-rule: do not convert a crooked or overbroad research report into a
+  locked style rule merely because it contains useful facts. Do not turn
+  “Japanese readers may benefit from ruby/person lists” into “every Chinese
+  novel translation must add ruby,” and do not turn Chinese students'
+  real-name/visa/name-card reading choices from social platforms into
+  publishing or fiction-dialogue rules.
+- Required prompt/report wording when research is used: name the surface
+  (`current Chinese novel body`, `hypothetical Japanese-reader edition`,
+  `character list`, `audiobook`, etc.), the status
+  (`LOCKED_USER`, `PENDING_STYLE_EVIDENCE`, or `MUST_NOT_RECORD`), and the
+  blocker that prevents over-application. Missing that disposition makes the
+  research unsafe as downstream relay evidence.
+
+## 2026-07-05 Dialogue Spoken-Form Guardrail: Chinese-Reader vs Japanese-Reader Surfaces
+
+- `USER_SOURCE`: 2026-07-05 user clarification after Chinese-name/ruby
+  research: in the user's current fiction, Japanese personal names have so far
+  used Japanese readings. If the user later wants a Chinese name in Japanese
+  dialogue to be pronounced in Chinese local sound, a Chinese-reader work whose
+  Japanese dialogue is followed by Chinese translation may write katakana-only,
+  not corresponding Japanese kanji plus ruby. For a Japanese-reader work, also
+  in character dialogue, the preferred local-sound surface is
+  `フー・チンタオ（胡錦濤）`, not `胡錦濤（フー・チンタオ）`.
+- `EXACT_CLAIM`: both cases are character dialogue. In dialogue, the text
+  outside parentheses is what is spoken/read; parenthetical text is identity
+  explanation or annotation. Chinese-reader embedded dialogue does not need
+  ruby/furigana/pinyin/phonetic aid to teach pronunciation when a Chinese
+  translation follows. If local sound is intended, write the spoken sound
+  directly as the dialogue surface.
+- `DERIVED_RULE`: Any translate-v2 prompt, style sheet, prep package, baton
+  brief, or final report that discusses Chinese names, readings, ruby, or
+  katakana in dialogue must first classify the audience surface:
+  `Chinese-reader embedded dialogue`, `Japanese-reader dialogue edition`, or
+  `non-dialogue reference/annotation`.
+  - For Chinese-reader embedded dialogue with following Chinese translation:
+    default remains no ruby/furigana/pinyin/phonetic assistance in body text;
+    current/default names keep their established Japanese readings unless the
+    user explicitly opens a local-sound exception. If the user explicitly wants
+    Chinese local sound, write the spoken form directly as katakana-only
+    dialogue text, e.g. `フー・チンタオ`.
+  - For Japanese-reader character dialogue where Chinese local sound is the
+    intended spoken sound: write katakana outside and kanji identity inside,
+    e.g. `フー・チンタオ（胡錦濤）`.
+  - `胡錦濤（フー・チンタオ）` belongs to reference/news/annotation-style surfaces
+    only when that is explicitly the desired medium. In dialogue, it puts kanji
+    in the spoken slot and defaults the line toward Japanese kanji reading.
+- `ANTI_RULE / NOT_AUTHORIZED`: Do not globalize katakana-only to all names; do
+  not add ruby/furigana to Chinese-reader body text merely because a name has a
+  Chinese local sound; do not use kanji-outside plus kana parenthetical for
+  local-sound dialogue unless the user explicitly asks for a non-dialogue
+  reference/annotation style; do not treat this as a bibliography, character
+  list, news, or official-identity rule.
+- `SCOPE/STATUS`: `MUST_RECORD` for translate-v2 dialogue style decisions,
+  prompts, prep packages, member instructions, reports, and reviews involving
+  Chinese names/readings/ruby/katakana in character dialogue. For
+  `the Antique Game Within Game companion skill`, the project-specific locked rule in that skill
+  remains the direct project authority; this section is the cross-translation
+  reusable surface gate.
+- `MACHINE/MANUAL PREFLIGHT`: Before sending or accepting any translate-v2
+  surface that discusses Chinese names in dialogue, state: audience surface,
+  spoken-form order, whether the user explicitly requested local sound, and the
+  anti-rule that prevents ruby or kanji-outside leakage. The execution gate in
+  `<tools-root>/scripts/translate_v2_contract_gate.py` must block the bad fixtures
+  below and pass the good fixtures below.
+- `BAD FIXTURE / EXPECT BLOCKED`: Chinese-reader embedded dialogue says
+  Chinese local sound should be written as Japanese kanji plus ruby or
+  `胡錦濤（フー・チンタオ）`; Japanese-reader character dialogue intending Chinese
+  local sound writes `胡錦濤（フー・チンタオ）` as the line.
+- `GOOD FIXTURE / EXPECT OK`: Chinese-reader embedded dialogue keeps body text
+  no-ruby and, only when the user explicitly wants Chinese local sound, writes
+  katakana-only spoken text such as `フー・チンタオ`; Japanese-reader character
+  dialogue intending Chinese local sound writes `フー・チンタオ（胡錦濤）`.
+
 ## 2026-05-27 Runtime Guardrail: Sound And Cadence Are Cross-Genre Quality
 
 - Check sound and cadence in every translation, not only poetry. A good target
@@ -182,6 +408,23 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   equally long, equally complete, or equally compressed. Long-short contrast,
   staggered rhythm, and breath control can be part of fidelity when the source
   or target genre wants literary/script readability.
+- Track wording, phrase, construction, and sentence-pattern echo at passage
+  level. Reusing the same word, phrase, syntactic construction, connector,
+  condition marker, reporting verb, address term, or sentence frame can be good
+  when it creates intentional cohesion, callback, pressure, motif, comedy,
+  ritual cadence, or character voice; do not erase useful echo just for
+  variety. But do not let an entire passage mechanically repeat the same word,
+  phrase, construction, or sentence pattern until the prose goes flat. Example:
+  if `if` has already saturated a long English reference/passage, a
+  source-compatible alternative such as `given` may be better when it preserves
+  the intended reasoning/probing flavor and avoids monotonous repetition.
+- Repetition review must be passage-level and source-bound: ask whether the
+  repeated word/phrase/construction/sentence pattern is doing artistic or
+  discourse work, and whether varying it would preserve meaning, character
+  voice, logic, and rhythm. Anti-rule: do not ban repeated wording globally, do
+  not force thesaurus or syntax variation that breaks a deliberate echo, and do
+  not keep repeating a dictionary-correct word, phrase, or frame just because
+  each isolated sentence can defend it.
 - Look for accidental useful sound structures: anaphora, epistrophe, chain
   repetition / 顶针, internal rhyme, light end rhyme, alliteration, assonance,
   consonance, and parallel cadence. Preserve or recreate them when they fit the
@@ -207,6 +450,15 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   But inside that boundary, allow target-language sentence restructuring,
   cadence design, discourse particles, tone re-creation, idiom replacement,
   and information-order adjustment when the genre requires it.
+- Preserve rhetorical and logical relations, not necessarily source surface
+  order. Target-language order may differ from source order when meaning,
+  emphasis, emotional/rhetorical pressure, who-does-what, causality, and
+  information hierarchy remain intact and the target reads better. Example:
+  Chinese `A 不说，还 B` may become `B, not to mention A` when the additive or
+  escalating pressure survives. Anti-rule: do not call order reversal an error
+  solely because source order differs; also do not use this flexibility to
+  invert causality, change focus, erase escalation, or demote a source-important
+  item into a weaker position.
 - Do not execute "literal-first" as word-order copying or line-by-line
   mechanical repair. Its correct meaning is: preserve recoverable meaning,
   information density, explicit/implicit balance, rhetoric, and auditable source
@@ -280,30 +532,30 @@ This file is public-maintained and should not be overwritten by upstream syncs w
 ## 2026-05-09 Codex Localization
 
 - Core algorithm remains `spec-v0.3.12.md`.
-- `SKILL.md` is a Codex workflow entrypoint, not the upstream long runtime manual.
+- `SKILL.md` is a Codex fork entrypoint, not the CC-side long runtime manual.
 - Normal Codex operation must not read Claude Code `claude-mem` or
-  `<external-agent-private-memory>`.
+  `<claude-config>/projects/.../memory`.
 - Automatic relay should use `ask_cc` for the CC baton. The user does not want
   copy/paste prompt relay into CC.
 - If `ask_cc` fails, treat it as an infrastructure/login blocker, not as a
   reason to silently remove CC from the relay.
-- 2026-05-09 user decision: in the Codex-led workflow, swap Codex and CC positions.
+- 2026-05-09 user decision: in the Codex-led fork, swap Codex and CC positions.
   Normal chain is `哈士奇 -> 小D -> CC -> 逗比 -> Codex conductor`.
 - Codex conductor is the final baton and report owner: it writes R2/R4/R6...
   divergence analysis reports and the final `Translation-report.md`.
 - `ask_codex` is no longer a routine relay baton; reserve it for explicit side
   reviews or extra Codex perspectives.
-- Codex workflow precedence: `SKILL.md` overrides upstream `spec-v0.3.12.md` for
+- Codex fork precedence: `SKILL.md` overrides upstream `spec-v0.3.12.md` for
   actor names, relay order, whiteboard paths, memory access, and report owner.
   The spec remains authoritative for the translation algorithm and artifact
   content schema.
 - Primary final outputs for ordinary translate-v2 tasks live under
-  `<translation-output-dir>/`.
+  `<translate-output-root>/`.
 - 2026-05-21 project override: when a task also triggers
-  `antique-game-within-game` for 《古董局中局》, final translation-only files and
+  `the Antique Game Within Game companion skill` for 《古董局中局》, final translation-only files and
   final analysis reports live under the chapter subdirectory matching the local
   adjusted layout:
-  `<translation-output-dir>/《古董局中局》/<部章>/`.
+  `<translate-output-root>/《古董局中局》/<部章>/`.
   Existing folders include `第一部第三章`, `第一部第四章`, and `第一部第八章`.
   These are examples only, not fallback targets. Derive `<部章>` from the
   current target chapter path/title, chapter card, or explicit user scene
@@ -324,10 +576,10 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   the chapter has no reports, record `NO_TRANSLATION_REPORTS_FOR_THIS_CHAPTER`.
   Do not feed it a pile of report `.md` files.
 - 2026-05-25 Antique project execution gate: when a translate-v2 task also
-  triggers Antique Game Within Game / `antique-game-within-game`, rereading skill files is not enough.
+  triggers `the Antique Game Within Game companion skill`, rereading skill files is not enough.
   Before any 小D prep prompt, Web/manual relay prompt, or user-facing
   `译前上下文包`, Codex must execute the Antique 2026-05-25 checklist in
-  the Antique Game companion project rules: include
+  `the Antique Game Within Game companion skill/NOTES.md`: include
   manuscript root, official KB root, target chapter path/title, matching
   chapter output/report directory, all-report-groups rule, source/task
   latest-per-group rule, source-boundary rule, reply-drop/output path, and
@@ -343,9 +595,9 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   review/root-cause answers are allowed only when the action explicitly says
   no translation, no prompt, and no dispatch. The executable regression marker
   is `antique-translation-prep-state-not-user-audited` in
-  `scripts/translate_v2_contract_gate.py`.
+  `<tools-root>/scripts/translate_v2_contract_gate.py`.
 - 2026-05-27 full-restart correction: if the user explicitly says `重开 tab`,
-  full restart, or no handover, do not write `<relay-prompt-scratch>` and
+  full restart, or no handover, do not write `<desktop>/prompt-codex.txt` and
   present it as translate-v2 progress, delivery, or next-tab continuity. The
   scratch prompt path remains valid only for an immediate current manual-relay
   action. If the user rejects prompt落档 as a side channel, delete the file and
@@ -354,7 +606,7 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   a global translation restriction. Ordinary non-《古董局中局》 translation tasks
   may still produce a direct answer or formal `translate-v2` relay prompt under
   normal `translate-v2` rules. The gate should activate only for a positive
-  Antique context (`antique-game-within-game` active, or the task actually about
+  Antique context (`the Antique Game Within Game companion skill` active, or the task actually about
   《古董局中局》 / Antique Game). Negative phrases such as `非古董局中局`, `不是古董局中局`,
   and `not antique` are exclusion evidence, not project triggers.
 - Default output behavior: create new task-specific files in the selected
@@ -363,7 +615,7 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   `YYYYMMDD-HHMMSS-{topic}-Translation-report.md`). Do not overwrite existing
   `Translation.txt` / `Translation-report.md` unless the user explicitly asks
   to overwrite. This rule was changed by user decision on 2026-05-14 after
-  repeated upstream mistakes made versioned outputs preferable.
+  repeated CC-side mistakes made versioned outputs preferable.
 - 2026-05-22 final-output gate: do not create final `Translation*.txt` or
   `Translation-report*.md` merely because a relay reached strict convergence or
   a baton recommended finalization. Step 5 may run only after one of two
@@ -374,7 +626,7 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   chooses the most satisfactory translation, and asks to use it as final.
   Otherwise stop at checkpoint and keep any written materials as round/archive
   or provisional artifacts, not official final outputs.
-- Mirror `<translation-output-dir>/Translation.txt` only as an explicit convenience
+- Mirror `<desktop>/Translation.txt` only as an explicit convenience
   copy when useful/requested.
 - For long translation runs, every round checkpoint should include a compact
   resume state so automatic context compaction cannot lose the next-baton
@@ -392,14 +644,59 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   algorithm. Keep serial baton order, N-1/N-2 context, §3.1 principles, 14-
   dimension scoring, round archives, checkpointing, convergence, and final
   report schema unchanged.
-- In the Codex workflow, normal CLI chain is
-  `哈士奇 -> 小D -> CC -> 逗比 -> Codex conductor`; Web Relay Mode maps this
-  to `哈基米 -> 老D -> 小克 -> 包子 -> 小G` unless the user explicitly names a
-  different Web endpoint for a baton. User correction on 2026-05-19: 小G /
-  ChatGPT Web replaces Codex inside the Web relay chain only. Codex in the
-  current main thread remains the conductor for prompt packaging, raw-capture
-  verification, combined round archives, checkpoint judgment, divergence
-  analysis, final reports, and user-facing synthesis.
+- In the Codex fork, normal CLI chain is
+  `哈士奇 -> 小D -> CC -> 逗比 -> Codex conductor`; Web/Hybrid Relay Mode maps
+  this to `哈基米 -> 小D -> 小克 -> 小G -> Qoder` unless the user explicitly names a
+  different endpoint for a baton. User correction on 2026-07-06 supersedes the
+  2026-07-05 `... -> Codex` chain: this is now the default manual-relay chain;
+  包子 and Codex exit the ordinary relay-member chain unless explicitly named,
+  小G is the fourth baton, Qoder is the fifth baton, and Codex remains conductor
+  for prompt packaging, linting, raw-capture verification, combined round
+  archives, checkpoint judgment, divergence analysis, final reports, and
+  user-facing synthesis.
+- 2026-07-05 user correction: 老D / DeepSeek Web must be removed from the
+  default translation relay second-baton slot and replaced by 小D. Reason:
+  老D had no usable联网/search mode in the observed route but still produced
+  apparent `NotebookLM` / dictionary / ordinary-search "补查" claims, making
+  the result capability-mismatched rather than valid evidence. Positive rule:
+  future prompts use `哈基米 -> 小D -> 小克 -> 小G -> Qoder`. Negative blocker:
+  do not send dictionary- or web-search-dependent补查 tasks to 老D; do not
+  treat 老D claims of lookup/search evidence as valid unless a current preflight
+  proves the exact route has the required联网/词典 capability. Old
+  `哈基米 -> 老D -> 小克 -> 包子 -> 小G` may appear only as rejected/deprecated
+  history.
+- 2026-07-05 latest user chain update: default Web/Hybrid Relay was
+  `哈基米 -> 小D -> 小克 -> 小G -> Codex`, defaulting to manual relay. Current
+  Part1-09 R1 is a transitional exception: 老D's already archived R1B2 is not
+  voided and may be used as N-1 for 小克; 小D starts officially from the next
+  round.
+- USER_SOURCE 2026-07-06: user changed the future default Web/Hybrid relay
+  chain to `哈基米 -> 小D -> 小克 -> 小G -> Qoder`, explicitly replacing Codex as
+  the fifth relay-chain member because the user does not trust the two ChatGPT
+  members inside the relay. Exact claim: Qoder must not be lazy; Qoder must use
+  its `web-access` skill/route, search source-language and target-language
+  websites that other members cannot easily access, search comprehensively, and
+  write the results comprehensively, "和哈基米那边查词典一个道理". Derived
+  executable rule: all future ordinary Web/Hybrid relay prompt packages,
+  handovers, round archives, and lint fixtures must use
+  `哈基米 -> 小D -> 小克 -> 小G -> Qoder`. Qoder fifth-baton prompts must include a
+  conspicuous no-lazy web-access research contract: use web-access; cover both
+  source-language and target-language sources/platforms; include hard-to-access
+  or real-user/social platforms such as 小红书 where relevant; enumerate every
+  disputed segment/term/register/honorific/source-boundary issue checked; mark
+  misses as not found / cannot verify; and list all searched items, chosen and
+  rejected evidence, remaining risk, and source URLs/notes. Negative blocker /
+  anti-rule: do not leave Codex as the live fifth baton in the default chain; do
+  not use Qoder as a thin local-file reviewer; do not allow Qoder to claim
+  "查了但不列全" or provide only sample findings; do not let Codex perform the
+  fifth-baton web-access pass by default; Codex may only conduct, lint, file,
+  archive, and synthesize unless explicitly named as a relay member. Scope:
+  future translate-v2 ordinary Web/Hybrid Relay Mode, MUST_RECORD. Machine
+  check: `scripts/translate_v2_artifact_lint.py --type prompt-package` blocks live
+  default chains ending in Codex and blocks Qoder fifth-baton prompts missing
+  web-access/no-lazy/full-list requirements; `--type baton-raw` blocks Qoder raw
+  that lacks web-access/source-language/target-language/comprehensive checked
+  records.
 - 2026-06-23 哈基米 NotebookLM 目标语词典升级：在普通 `网页版接力`
   中，哈基米 / Gemini Web 作为第一棒时必须充分利用 NotebookLM 的目标语词典。
   对不确定的翻译点（词汇、搭配、习语、语域、关键术语、重要理解点等），prompt
@@ -411,9 +708,21 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   不明确，也允许哈基米普通联网确认源文理解。反向阻断：不得查源语词典冒充目标语词典；
   不得因为中/英/日是当前例子就把规则锁死成三语专用；不得让联网搜索或词典结果覆盖
   用户、源文、上下文、术语表、剧情事实或作者意图，也不得给源文额外添加无证含义。
+- 2026-07-05 用户补充：NotebookLM 实际使用是一个语种一个笔记本；哈基米 prompt
+  面向目标语笔记本提问即可。不要在给哈基米的复制块里把中文/英文/日语词典写成可切换的
+  多选项，尤其不要让“当前已接入中文、英语、日语”喧宾夺主。正向要求：写清本任务目标语
+  对应的具体词典区（如日译时直接在日语词典区问），并把需要查词典的具体日语问题逐项列出。
+  反向阻断：不得把目标语词典说成“只用于不确定用法”的可选工具，也不得用泛泛 fallback
+  代替针对源文、译前上下文包和用户说明提炼出的必查清单。
+- 2026-07-05 用户再次纠偏：上述 NotebookLM 目标语词典强制只适用于哈基米
+  / Gemini Web 第一棒。除哈基米外，小D、小克、包子、小G等后续成员不强制查
+  NotebookLM 词典；后续棒应发挥各自通道优势，使用普通联网、日语在线辞書、语料、
+  机构/法律/新闻用例、专业术语平台或其它可访问来源核验。prompt 可以要求后续棒
+  审计哈基米是否漏查，但不得让它们背“哈基米词典必查清单”，也不得把不能访问的
+  NotebookLM/网页写成已查证据；能力不足时写 `CANNOT_VERIFY_BY_THIS_CHANNEL`。
 - 哈基米 Web prompt-package 必须显式写出上述词典分支和 fallback。实际 prompt
   写出后，运行
-  `scripts/translate_v2_artifact_lint.py --type prompt-package <path>`；
+  `<tools-root>/scripts/translate_v2_artifact_lint.py --type prompt-package <path>`；
   缺 NotebookLM、目标语词典、目标语未接入降级、查不到后普通联网搜索 fallback、
   原文释义不明确时可联网确认的边界、或源语词典反向阻断时，不得发送给哈基米。
 - Do not treat Web Relay Mode as web Deep Research. Deep Research remains a
@@ -423,17 +732,20 @@ This file is public-maintained and should not be overwritten by upstream syncs w
 
 - Before any `网页版接力` baton is sent, run a visible preflight checklist and
   record the result in the working notes/round archive:
-  1. Baton order is `哈基米 -> 老D -> 小克 -> 包子 -> 小G`; 小G is the fifth
-     ordinary Web relay baton, not a sixth extra baton and not Deep Research
-     unless the user separately triggers research.
+  1. Baton order is `哈基米 -> 小D -> 小克 -> 小G -> Qoder`; Qoder is the fifth
+     ordinary Web relay baton, not Codex, not a sixth extra baton, and not Deep
+     Research unless the user separately triggers research. Qoder's fifth baton
+     must use web-access and must provide a full, listed research/check record.
   2. Use the user's already prepared tab when they say they opened/configured
      one. Do not open a fresh tab for that member unless the existing tab is
      unusable or the user asks. A fresh tab is a fresh configuration state.
-  3. Model/mode must be the web endpoint's strongest visible option, matching
-     CLI default strength as closely as possible. For 老D this means expert
-     mode / 深度思考 when visible; for 小克 use the highest visible model such
-     as Opus/Adaptive when available; for 包子 use the strongest ordinary chat
-     mode and do not switch into Deep Research/translation-tool shortcuts.
+  3. Model/mode/capability must be verified for the actual endpoint. For 小D,
+     use the established private/local 小D route appropriate to manual relay.
+     For 小克 use the highest visible model such as Opus/Adaptive when
+     available; for 包子 use the strongest ordinary chat mode and do not switch
+     into Deep Research/translation-tool shortcuts. Do not substitute 老D for
+     小D unless the user explicitly re-authorizes and a fresh capability
+     preflight proves the exact 老D route can perform the required lookup/search.
   4. If the web UI has no explicit thinking-effort control, do not block the
      relay; record "no visible thinking control" in the archive. If it does,
      use the next-highest thinking amount unless the user says otherwise.
@@ -448,13 +760,13 @@ This file is public-maintained and should not be overwritten by upstream syncs w
      contains the full prompt, not just the first paragraph. If only a prefix
      was sent, stop immediately and mark the attempt polluted.
   7. After the web member finishes, immediately write a raw capture under
-     `<relay-raw-dir>/` before dispatching the next baton. The raw
+     `<reply-drop>/` before dispatching the next baton. The raw
      file must include UTC timestamp, member/baton, page title/URL when
      available, full visible prompt/reply text, and validation flags for the
      required schema fields. Immediately run
-     `scripts/translate_v2_artifact_lint.py --type baton-raw <raw-file>`;
+     `<tools-root>/scripts/translate_v2_artifact_lint.py --type baton-raw <raw-file>`;
      for Antique Game tasks also run
-     `scripts/lint_chinese_main_artifact.py <raw-file>`.
+     `the Antique Game Within Game companion skill/scripts/lint_chinese_main_artifact.py <raw-file>`.
      Missing raw capture or missing/pending/BLOCKED raw language lint means the
      baton is not yet eligible to become N-1/N-2.
   8. A baton is official only if preflight, post-send verification, raw
@@ -505,7 +817,7 @@ This file is public-maintained and should not be overwritten by upstream syncs w
 
 - Final `Translation-report` files and R2/R4/R6... divergence analysis reports
   must match the level of detail used by existing output samples under
-  `<translation-output-dir>/`, not a short rationale
+  `<translate-output-root>/`, not a short rationale
   memo.
 - Default final report structure should include: metadata, complete user input
   (verbatim where recoverable), prep context package summary, explicit
@@ -580,6 +892,30 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   final reports should flag any over-explicitness or density inflation as a
   potential Addition / style defect.
 
+## 2026-07-05 Runtime Guardrail: Full-Line Analysis Requires Source-Locked Full Source
+
+- USER_SOURCE: The user rejected the Part1-09 R1 round archive after Codex
+  claimed "全部逐行详析" while the archive's first analyzed line was
+  `本の題名は？` instead of the real source opening `随便坐。` / `你们不是来找沈云琛的吗？坐啊。`;
+  the user pointed to `<desktop>/草稿.txt` and to the prep/member raws
+  as evidence that the full source ran from `随便坐` to `无可奉告`.
+- Positive rule: before writing a round archive, checkpoint, divergence report,
+  final report, or any syntax/morphology analysis that claims "全部", first
+  perform a source-lock audit against the real source text, handover/prep package,
+  and member raws. For Antique Part1-09沈君段, the audit must explicitly record
+  first source anchor `随便坐`, the follow-up seat line `你们不是来找沈云琛的吗？坐啊`,
+  and final source anchor `无可奉告`; Line 161 starts from the seat command, not
+  from the later book-title exchange.
+- Negative blocker: a line-number list, candidate-only pool, representative risk
+  table, or UI screenshot is not a full source. Do not let `Line 161`/`Line 261`
+  headings pass if their source anchors do not match the real first/last source
+  dialogue. Do not use a contaminated round archive as N-1/handoff/member-review
+  input until it is rebuilt and passes lint.
+- Machine check: `<tools-root>/scripts/translate_v2_artifact_lint.py`
+  blocks Part1-09 R1B5 round/final artifacts containing a
+  `SOURCE_BOUNDARY_FAILED` marker, missing the source anchors, or mapping
+  `Line 161` to `本の題名は？` instead of the opening seat command.
+
 ## 2026-05-14 Runtime Policy: PUA Is Not Globally Managed By translate-v2
 
 - translate-v2 does not manage a global PUA on/off state.
@@ -588,107 +924,3 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   changes that member.
 - If a concrete PUA-related output/channel problem appears, handle it locally
   for that member/channel.
-
-## 2026-07-05 Research Intake Guardrail: Audience And Medium Before Style Rules
-
-- Translation research, Deep Research reports, web-access captures, social
-  platform notes, and member reports are evidence, not automatic rules. Before
-  using them in any translate-v2 prompt, style sheet, prep package, baton brief,
-  or final report, classify each point as `MUST_RECORD`,
-  `PENDING_STYLE_EVIDENCE`, or `MUST_NOT_RECORD`.
-- A point can become `MUST_RECORD` only when it is a user rule/correction,
-  a source-authoritative fact, a verified recurring failure gate, or a direct
-  artifact contract. A member-only recommendation, social-platform sample,
-  edition-specific publishing habit, or provisional style suggestion stays
-  `PENDING_STYLE_EVIDENCE` unless the user explicitly adopts it for the active
-  task.
-- Always separate audience and medium before applying style advice: source
-  manuscript, embedded foreign-language dialogue inside a Chinese novel,
-  Japanese-reader publication, character list, audiobook/subtitle/voice acting,
-  editorial style sheet, terminology memo, official documents, and social/admin
-  identity use are different surfaces. Advice from one surface may be cited as
-  background for another, but it may not override the active surface.
-- For Chinese names in Japanese translation research, keep three layers
-  separate: written form, reading, and ruby/furigana. General reusable evidence:
-  Chinese names in Japanese prose often use Japanese-usable kanji forms rather
-  than raw simplified Chinese or blind traditionalization; readings may be
-  Japanese on-yomi or Chinese local-sound katakana depending on medium and
-  style sheet; ruby frequency is an editorial decision, not the name
-  translation itself.
-- Project-specific override: when `antique-game-within-game` is active, its
-  user-locked Chinese-reader rule wins. For 《古董局中局》 embedded Japanese
-  dialogue, the current default is no ruby/furigana/pinyin/phonetic assistance
-  in body text; reading information belongs in prep notes, term memos, or
-  user-requested appendices unless the user opens a specific exception.
-- Anti-rule: do not convert a crooked or overbroad research report into a
-  locked style rule merely because it contains useful facts. Do not turn
-  “Japanese readers may benefit from ruby/person lists” into “every Chinese
-  novel translation must add ruby,” and do not turn Chinese students'
-  real-name/visa/name-card reading choices from social platforms into
-  publishing or fiction-dialogue rules.
-- Required prompt/report wording when research is used: name the surface
-  (`current Chinese novel body`, `hypothetical Japanese-reader edition`,
-  `character list`, `audiobook`, etc.), the status
-  (`LOCKED_USER`, `PENDING_STYLE_EVIDENCE`, or `MUST_NOT_RECORD`), and the
-  blocker that prevents over-application. Missing that disposition makes the
-  research unsafe as downstream relay evidence.
-
-## 2026-07-05 Dialogue Spoken-Form Guardrail: Chinese-Reader vs Japanese-Reader Surfaces
-
-- `USER_SOURCE`: 2026-07-05 user clarification after Chinese-name/ruby
-  research: in the user's current fiction, Japanese personal names have so far
-  used Japanese readings. If the user later wants a Chinese name in Japanese
-  dialogue to be pronounced in Chinese local sound, a Chinese-reader work whose
-  Japanese dialogue is followed by Chinese translation may write katakana-only,
-  not corresponding Japanese kanji plus ruby. For a Japanese-reader work, also
-  in character dialogue, the preferred local-sound surface is
-  `フー・チンタオ（胡錦濤）`, not `胡錦濤（フー・チンタオ）`.
-- `EXACT_CLAIM`: both cases are character dialogue. In dialogue, the text
-  outside parentheses is what is spoken/read; parenthetical text is identity
-  explanation or annotation. Chinese-reader embedded dialogue does not need
-  ruby/furigana/pinyin/phonetic aid to teach pronunciation when a Chinese
-  translation follows. If local sound is intended, write the spoken sound
-  directly as the dialogue surface.
-- `DERIVED_RULE`: Any translate-v2 prompt, style sheet, prep package, baton
-  brief, or final report that discusses Chinese names, readings, ruby, or
-  katakana in dialogue must first classify the audience surface:
-  `Chinese-reader embedded dialogue`, `Japanese-reader dialogue edition`, or
-  `non-dialogue reference/annotation`.
-  - For Chinese-reader embedded dialogue with following Chinese translation:
-    default remains no ruby/furigana/pinyin/phonetic assistance in body text;
-    current/default names keep their established Japanese readings unless the
-    user explicitly opens a local-sound exception. If the user explicitly wants
-    Chinese local sound, write the spoken form directly as katakana-only
-    dialogue text, e.g. `フー・チンタオ`.
-  - For Japanese-reader character dialogue where Chinese local sound is the
-    intended spoken sound: write katakana outside and kanji identity inside,
-    e.g. `フー・チンタオ（胡錦濤）`.
-  - `胡錦濤（フー・チンタオ）` belongs to reference/news/annotation-style surfaces
-    only when that is explicitly the desired medium. In dialogue, it puts kanji
-    in the spoken slot and defaults the line toward Japanese kanji reading.
-- `ANTI_RULE / NOT_AUTHORIZED`: Do not globalize katakana-only to all names; do
-  not add ruby/furigana to Chinese-reader body text merely because a name has a
-  Chinese local sound; do not use kanji-outside plus kana parenthetical for
-  local-sound dialogue unless the user explicitly asks for a non-dialogue
-  reference/annotation style; do not treat this as a bibliography, character
-  list, news, or official-identity rule.
-- `SCOPE/STATUS`: `MUST_RECORD` for translate-v2 dialogue style decisions,
-  prompts, prep packages, member instructions, reports, and reviews involving
-  Chinese names/readings/ruby/katakana in character dialogue. For
-  `antique-game-within-game`, the project-specific locked rule in that skill
-  remains the direct project authority; this section is the cross-translation
-  reusable surface gate.
-- `MACHINE/MANUAL PREFLIGHT`: Before sending or accepting any translate-v2
-  surface that discusses Chinese names in dialogue, state: audience surface,
-  spoken-form order, whether the user explicitly requested local sound, and the
-  anti-rule that prevents ruby or kanji-outside leakage. The execution gate in
-  `<tools-root>/scripts/translate_v2_contract_gate.py` must block the bad fixtures
-  below and pass the good fixtures below.
-- `BAD FIXTURE / EXPECT BLOCKED`: Chinese-reader embedded dialogue says
-  Chinese local sound should be written as Japanese kanji plus ruby or
-  `胡錦濤（フー・チンタオ）`; Japanese-reader character dialogue intending Chinese
-  local sound writes `胡錦濤（フー・チンタオ）` as the line.
-- `GOOD FIXTURE / EXPECT OK`: Chinese-reader embedded dialogue keeps body text
-  no-ruby and, only when the user explicitly wants Chinese local sound, writes
-  katakana-only spoken text such as `フー・チンタオ`; Japanese-reader character
-  dialogue intending Chinese local sound writes `フー・チンタオ（胡錦濤）`.
