@@ -58,10 +58,6 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   relay trajectory, baseline comparison, three-layer scoring, detailed
   syntax/morphology, direct-vs-conversion audit, highlights/prosody, research
   TODO, compliance self-check, artifact list, and Chinese main narrative.
-- Do not claim translate-v2 execution is complete merely because a gate script
-  passed. Completion requires the specific artifact gate for the current stage
-  to pass and the expected files/raw captures to exist when that stage creates
-  files.
 - 小D/本地 prep-helper 生成的 `译前上下文包` 也是正式输入门禁对象；每个接力成员的
   raw capture / 用户粘贴棒次输出也是正式 N-1/N-2 证据对象。二者都必须中文主叙述：
   分析、审查、评分、理由、收敛探针、raw wrapper 标题和说明必须中文；候选译文保留目标语；
@@ -155,28 +151,6 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   phrase/particle/honorific breakdown, dependency JSON with source alignment,
   lexical morphology table, strategy tags, and direct-vs-conversion audit.
   Short source text requires finer granularity, not a shorter report.
-- USER_SOURCE 2026-07-05: after Codex tried to repair a thin round archive by
-  writing only selected "candidate/risk" syntax groups, the user corrected that
-  the requirement is `全部`, not merely `候选`: "你现在写的是'全部'吗？你什么时候
-  写过'全部'？你一直写的都是'候选'." Exact claim: for this long Part1-09 R1B5
-  line-numbered Japanese passage, syntax/morphology analysis in the round
-  archive and later final `Translation-report.md` must cover every translated
-  line, not only disputed candidates or representative risk groups. User
-  correction later in the same thread tightened the definition again: `全部`
-  does not mean a full line-number index/table; it means every line/line-group
-  must have an independent `逐行详析` detail block. Derived executable rule:
-  for each line anchor in the translated passage, include a separate
-  `逐行详析：Line X` (or exact line-group heading when the source baton itself
-  groups lines) containing at minimum `译句`, `近似直译`, `root / 依存`,
-  `构词 / 语法`, `源文锚点`, and `直译与转换审计`. Negative blocker / anti-rule:
-  do not use "候选", "主要风险簇", "代表性片段", "sample", "next-baton must
-  evaluate points", a total index table, or "key lines expanded below" as a
-  substitute for full per-line detail; do not let the final report regress to
-  selected-candidate analysis. Machine check:
-  `scripts/translate_v2_artifact_lint.py --type round-archive` and
-  `--type final-report` block the current Part1-09 R1B5 surface unless the
-  syntax section contains the `全部逐行` claim and every required line heading
-  has the six-part detail plus direct-conversion audit.
 - USER_SOURCE 2026-07-05: after the rebuilt archive still used a shallow
   formulaic syntax/morphology shell, the user corrected that even aside from
   source incompleteness, the syntax/morphology analysis itself was
@@ -203,63 +177,6 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   `TRANSLATE_V2_ARTIFACT_LINT_STATUS=BLOCKED`, while a rebuilt archive with
   line-specific roots, morphology, and audit cells must report OK before it can
   be used as N-1/N-2 or handoff evidence.
-- USER_SOURCE 2026-07-06: the user explicitly extended the same `全部`
-  syntax/morphology gate to `final report`: "final report 也给我补；'全部'；
-  句法构词分析". Derived executable rule: final `Translation-report.md` for the
-  current Part1-09 / 《佛頭隨筆》 Line 161-261 passage must trigger the exact same
-  full-line and depth lint even if the report no longer mentions `Codex R1B5`
-  or a round-archive raw path. Negative blocker / anti-rule: do not rely on
-  baton labels, R1/R2 naming, or final-report skeleton headings to exempt the
-  syntax section; `第一部第九章` / `Part1-09` / `佛頭隨筆` plus Line 161/261,
-  D01-D64, `随便坐`, `无可奉告`, or `沈君段` is enough to require all line groups.
-  Machine check: `scripts/translate_v2_artifact_lint.py --type final-report`
-  applies `part109_r1b5_full_syntax_line_coverage_missing` and
-  `syntax_morphology_depth_missing` on those anchors, with bad selected-only
-  final-report fixtures BLOCKED and full line-specific syntax fixtures OK.
-- USER_SOURCE 2026-07-06: after Codex marked a rebuilt archive usable, the user
-  challenged that Codex had even fabricated the "full original text". Exact
-  failure: the rebuild script read D01-D64 source rows from a prep-backup table
-  and hand-written `FULL_SOURCE_OVERRIDES` while only using
-  `<desktop>/草稿.txt` for first/final anchor checks. Derived
-  executable rule: whenever an artifact says `全文原文`, `完整源文`,
-  `source-lock`, `complete user input`, or uses a real source-file path as source
-  evidence, the literal source text must be extracted from the actual source
-  file, same-tab JSONL, or confirmed verbatim archive text. Prep packages,
-  member raw, handover summaries, quote-only D tables, and Codex overrides may
-  provide indexes/context, but cannot become the source text itself. Negative
-  blocker / anti-rule: do not validate a source by checking only first/last
-  anchors; do not combine summary rows with hand-written overrides and label
-  them `全文原文`; do not use a contaminated rebuilt archive as N-1/N-2,
-  final-report input, or member-review evidence. Machine check: any Part1-09
-  artifact carrying `SOURCE_RECONSTRUCTION_FAILED`, `SOURCE_NOT_VERBATIM`,
-  `DO_NOT_USE_AS_N1`, or `DO_NOT_USE_AS_HANDOFF` must be BLOCKED by
-  `scripts/translate_v2_artifact_lint.py`; future rebuilds for this current
-  Part1-09事故 must either parse `<desktop>/草稿.txt` directly or
-  explicitly label derived quote tables as non-source summaries.
-- USER_SOURCE 2026-07-06: after Codex answered that R1B5 could be paired with
-  `<desktop>/草稿.txt`, the user corrected: "我不是每次翻译任务都给你
-  草稿.txt". Exact claim: `<desktop>/草稿.txt` is the concrete source
-  file for this Part1-09 accident only, not a universal translate-v2 source
-  locator. Derived executable rule: before any source-lock, full-source
-  reconstruction, round archive, final report, handoff, or member prompt that
-  needs the source text, first build a source authority inventory for the
-  current task: explicit user-provided file/path or attachment; source text
-  pasted in the same tab recovered from JSONL; confirmed verbatim Codex Tab
-  History archive for a different tab; current baton raw only for target
-  candidate text; prep/handover/member raws only for context/index unless they
-  themselves are confirmed verbatim sources. Negative blocker / anti-rule: do
-  not assume `<desktop>/草稿.txt` exists, applies, is current, or is
-  complete for other translation tasks; do not hardcode it in prompt templates,
-  scripts, reports, or future handovers as the default source file; do not
-  replace source discovery with "use 草稿.txt" except when the current task's
-  evidence explicitly names that file. Scope/status/evidence: translate-v2
-  source-lock and artifact reconstruction, MUST_RECORD; evidence is the
-  2026-07-06 Part1-09 R1B5 source-priority correction. Machine check:
-  `scripts/translate_v2_artifact_lint.py` blocks artifacts that present
-  `<desktop>/草稿.txt` as the universal/default/every-translation
-  source locator, while allowing current-run evidence that labels it as a
-  task-specific source and includes a generic source-authority discovery rule.
-
 ## 2026-05-27 Runtime Guardrail: Author Reference Samples Are Optional Dual Evidence
 
 - The user may sometimes provide their own translation in another language
@@ -665,11 +582,6 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   proves the exact route has the required联网/词典 capability. Old
   `哈基米 -> 老D -> 小克 -> 包子 -> 小G` may appear only as rejected/deprecated
   history.
-- 2026-07-05 latest user chain update: default Web/Hybrid Relay was
-  `哈基米 -> 小D -> 小克 -> 小G -> Codex`, defaulting to manual relay. Current
-  Part1-09 R1 is a transitional exception: 老D's already archived R1B2 is not
-  voided and may be used as N-1 for 小克; 小D starts officially from the next
-  round.
 - USER_SOURCE 2026-07-06: user changed the future default Web/Hybrid relay
   chain to `哈基米 -> 小D -> 小克 -> 小G -> Qoder`, explicitly replacing Codex as
   the fifth relay-chain member because the user does not trust the two ChatGPT
@@ -894,28 +806,11 @@ This file is public-maintained and should not be overwritten by upstream syncs w
 
 ## 2026-07-05 Runtime Guardrail: Full-Line Analysis Requires Source-Locked Full Source
 
-- USER_SOURCE: The user rejected the Part1-09 R1 round archive after Codex
-  claimed "全部逐行详析" while the archive's first analyzed line was
-  `本の題名は？` instead of the real source opening `随便坐。` / `你们不是来找沈云琛的吗？坐啊。`;
-  the user pointed to `<desktop>/草稿.txt` and to the prep/member raws
-  as evidence that the full source ran from `随便坐` to `无可奉告`.
-- Positive rule: before writing a round archive, checkpoint, divergence report,
-  final report, or any syntax/morphology analysis that claims "全部", first
-  perform a source-lock audit against the real source text, handover/prep package,
-  and member raws. For Antique Part1-09沈君段, the audit must explicitly record
-  first source anchor `随便坐`, the follow-up seat line `你们不是来找沈云琛的吗？坐啊`,
-  and final source anchor `无可奉告`; Line 161 starts from the seat command, not
-  from the later book-title exchange.
 - Negative blocker: a line-number list, candidate-only pool, representative risk
   table, or UI screenshot is not a full source. Do not let `Line 161`/`Line 261`
   headings pass if their source anchors do not match the real first/last source
   dialogue. Do not use a contaminated round archive as N-1/handoff/member-review
   input until it is rebuilt and passes lint.
-- Machine check: `<tools-root>/scripts/translate_v2_artifact_lint.py`
-  blocks Part1-09 R1B5 round/final artifacts containing a
-  `SOURCE_BOUNDARY_FAILED` marker, missing the source anchors, or mapping
-  `Line 161` to `本の題名は？` instead of the opening seat command.
-
 ## 2026-05-14 Runtime Policy: PUA Is Not Globally Managed By translate-v2
 
 - translate-v2 does not manage a global PUA on/off state.
