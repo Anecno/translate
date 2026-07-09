@@ -22,6 +22,7 @@ N-1 and N-2 previous baton.
 raw capture full output.
 round archive.
 checkpoint wait for user.
+even-round divergence analysis (R2/R4/R6).
 final output user confirmation.
 public spec current public entry.
 scores.language scores.literary scores.cultural aggregate.
@@ -93,6 +94,8 @@ def test_public_flow_contract_preflight_raw_lint_consistency() -> None:
             str(raw_path),
             "--artifact-lint-status",
             "TRANSLATE_V2_ARTIFACT_LINT_STATUS=OK",
+            "--prompt-captured",
+            "full prompt captured",
             "--output-captured",
             "full output captured",
         )

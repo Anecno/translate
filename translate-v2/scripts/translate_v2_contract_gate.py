@@ -5,7 +5,13 @@ from __future__ import annotations
 
 import argparse
 
-from translate_v2_common import flat_scores_missing, has_any, has_layered_scores
+from translate_v2_common import (
+    flat_scores_missing,
+    has_any,
+    has_layered_scores,
+    na_without_reason_missing,
+    three_layer_score_block_missing,
+)
 
 
 def contract_missing(text: str) -> list[str]:
@@ -16,12 +22,24 @@ def contract_missing(text: str) -> list[str]:
         ("contract:raw-capture", ["raw capture", "full output"]),
         ("contract:round-archive", ["round archive"]),
         ("contract:checkpoint", ["checkpoint", "wait for user"]),
+        # Even rounds trigger the divergence-analysis gate; the relay/handoff
+        # contract must tell downstream that this duty is part of the plan, not
+        # an optional afterthought.
+        (
+            "contract:even-round-divergence",
+            ["divergence analysis", "even-round", "even round", "偶数轮", "发散分析", "r2/r4/r6"],
+        ),
         ("contract:final-output-confirmation", ["final output", "user confirmation"]),
         ("contract:stale-source-boundary", ["public spec", "current public entry"]),
     ]
     missing = [name for name, needles in checks if not has_any(text, needles)]
     if not has_layered_scores(text):
         missing.append("contract:layered-scoring")
+    # The three-layer scoring schema must stay co-located as one coherent block,
+    # not scattered across the document where a missing layer hides easily.
+    missing.extend(three_layer_score_block_missing(text))
+    # A bare "N/A" silently drops a required dimension; require a reason.
+    missing.extend(na_without_reason_missing(text, "contract:"))
     missing.extend(flat_scores_missing(text, "contract:"))
     stale_markers = [
         "scores_14d",

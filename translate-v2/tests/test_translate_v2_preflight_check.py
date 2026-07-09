@@ -90,6 +90,8 @@ def test_after_result_ok() -> None:
             "raw.md",
             "--artifact-lint-status",
             "TRANSLATE_V2_ARTIFACT_LINT_STATUS=OK",
+            "--prompt-captured",
+            "full prompt captured",
             "--output-captured",
             "full output captured",
         ]

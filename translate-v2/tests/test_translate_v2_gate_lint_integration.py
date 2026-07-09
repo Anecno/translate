@@ -32,6 +32,7 @@ N-1 and N-2 previous baton.
 raw capture full output.
 round archive.
 checkpoint wait for user.
+even-round divergence analysis (R2/R4/R6).
 final output user confirmation.
 public spec current public entry.
 scores.language scores.literary scores.cultural aggregate.
