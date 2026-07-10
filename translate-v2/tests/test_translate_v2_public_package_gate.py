@@ -29,7 +29,7 @@ def make_good_package(root: Path) -> None:
     (root / "tests").mkdir()
     (root / "SKILL.md").write_text(
         "# Public skill\n"
-        "Web Relay: 哈基米, 老D, 小克, 包子, 小G.\n"
+        "Web Relay: 哈基米, 小D, 小克, 小G, Qoder.\n"
         "CLI/API Relay: 哈士奇, 小D, CC, 逗比.\n"
         "Antique Game Within Game / 《古董局中局》 context boundary.\n",
         encoding="utf-8",

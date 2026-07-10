@@ -67,10 +67,10 @@ FORBIDDEN_SUFFIXES = {
 REQUIRED_PUBLIC_MARKERS = {
     "SKILL.md": [
         "哈基米",
-        "老D",
+        "小D",
         "小克",
-        "包子",
         "小G",
+        "Qoder",
         "哈士奇",
         "小D",
         "CC",
