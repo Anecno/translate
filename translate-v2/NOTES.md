@@ -850,3 +850,6 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   fluency_mechanics/voice_register/rhythm_prosody/reader_reachability（spec §3.1 评分修正
   + §3.2 L600/L609 + 本 NOTES「Constrained Re-Creation」§ 已有此扣分锚）。判据＝是否服务
   原文功能与目标语成品感，非改多改少、非贴不贴字面。
+- 顺口豁免（2026-07-10 用户授权）：被判"赘余"的语气助词/词，若删去后目标语读来实在
+  不顺口（破坏语感/节奏/口气/停顿/成品感），允许保留不删——顺口/成品感优先于机械去赘。
+  判据仍是目标语成品感与朗读流畅，非"能删就删、删到最少"。
