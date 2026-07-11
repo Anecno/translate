@@ -844,3 +844,9 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   解释/纠偏曲解成"替你加戏"。
 - 反面：不得等用户催才降密度；不得把信息密度埋进其他原则一句带过；不得把用户提供的
   背景当"待译内容"塞进译文。
+- 双向平衡（防矫枉过正到死板直译·2026-07-10 补）：本 guardrail 只砍译文自加的赘余，
+  **不取消 §3.1 二次创作授权**（句法重组/语气再造/习语替换/地道化，有源文锚点、服务
+  原文功能就大胆做）；走向死板直译/词序搬运/句法尸检/机器腔/翻译腔是另一极端，照扣
+  fluency_mechanics/voice_register/rhythm_prosody/reader_reachability（spec §3.1 评分修正
+  + §3.2 L600/L609 + 本 NOTES「Constrained Re-Creation」§ 已有此扣分锚）。判据＝是否服务
+  原文功能与目标语成品感，非改多改少、非贴不贴字面。
