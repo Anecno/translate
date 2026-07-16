@@ -1,6 +1,6 @@
 # Dictionary References
 
-This translation project uses the following reference works in a local dictionary library. This document will be updated as I add new dictionaries to the local dictionary library.
+This translation project uses the following reference works. This document will be updated, as I add new dictionaries to local database.
 
 ## 中文
 
