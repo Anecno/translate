@@ -18,7 +18,7 @@ This translation project uses the following reference works. This document will 
 - *Oxford Advanced Learner's Dictionary*
 - *Longman Dictionary of Contemporary English*
 - *Collins COBUILD Advanced Learner's Dictionary*
-- *Cambridge Advanced Learner's Dictionary*
+- *Cambridge Advanced Learner's Dictionary & Thesaurus*
 - *Merriam-Webster's Collegiate Dictionary*
 - *Oxford Learner's Dictionary of Academic English*
 - *Oxford Collocations Dictionary for Students of English*
