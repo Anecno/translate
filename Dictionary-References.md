@@ -4,7 +4,7 @@ This translation project uses the following reference works. This document will 
 
 ## 中文
 
-- 《现代汉语词典》（第7版）
+- 《现代汉语词典》
 - 《古代汉语词典》
 - 《大辞海》
 - 《中国考古学大辞典》
@@ -27,11 +27,11 @@ This translation project uses the following reference works. This document will 
 
 ## 日本語
 
-- 『大辞林 第四版』
-- 『広辞苑 第七版』
-- 『新明解国語辞典 第八版』
-- 『日本国語大辞典 第二版』
-- 『明鏡国語辞典 第三版』
+- 『大辞林』
+- 『広辞苑』
+- 『新明解国語辞典』
+- 『日本国語大辞典』
+- 『明鏡国語辞典』
 - 『角川古語大辞典』
 
 ## ភាសាខ្មែរ
