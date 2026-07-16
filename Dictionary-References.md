@@ -21,9 +21,9 @@ This translation project uses the following reference works. This document will 
 - *Cambridge Advanced Learner's Dictionary*
 - *Merriam-Webster's Collegiate Dictionary*
 - *Oxford Learner's Dictionary of Academic English*
-- *Oxford Collocations Dictionary*
-- *Oxford Learner's Thesaurus*
-- *Oxford Phrasal Verbs Dictionary*
+- *Oxford Collocations Dictionary for Students of English*
+- *Oxford Learner's Thesaurus: A Dictionary of Synonyms*
+- *Oxford Phrasal Verbs Dictionary for Learners of English*
 
 ## 日本語
 
