@@ -1,6 +1,6 @@
 # Translate
 Suitable for translation tasks where there is no deadline pressure and high-quality
-is the priority. Not suitable for translating long texts; performance is better with just a few paragraphs.
+is the priority.
 
 ## Notes
 
