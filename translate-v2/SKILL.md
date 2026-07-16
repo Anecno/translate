@@ -214,6 +214,31 @@ Default runtime channel:
   Old `哈基米 -> 小D -> 小克 -> 小G -> Qoder` and
   `哈基米 -> 小D -> 小克 -> 包子 -> 小G` may appear only as rejected/deprecated
   history or the explicitly marked current R1 exception.
+- **User correction on 2026-07-17 supersedes all of the above as the current
+  default relay chain: `哈士奇 -> 小D -> 小克 -> Codex -> Qoder`.** The first baton
+  is now `哈士奇` (Gemini CLI, local, no NotebookLM), not `哈基米` (Gemini Web).
+  Codex re-enters the chain as the fourth relay-baton member (writing a
+  translation + review like any baton) and no longer holds the conductor slot;
+  the conductor is `CC`, who writes the prompt for the user to relay, and no
+  relay member (哈士奇/小D/小克/Codex/Qoder) doubles as conductor. `小克` =
+  claude.ai web Claude = the only member without local file access (distinct
+  from `CC`, the conductor). `小G` and `包子` leave the ordinary default chain
+  and may appear only as rejected/deprecated history unless the user explicitly
+  names them. Manual relay remains the only mode.
+- **2026-07-17 first-baton dictionary duty (哈士奇, supersedes the 哈基米/NotebookLM
+  rule below for the current default chain):** the first baton is now `哈士奇`
+  (Gemini CLI), which does NOT carry NotebookLM, but its dictionary duty is the
+  same as the old 哈基米 first baton — the target-language dictionary is priority
+  and mandatory every baton (vocabulary / collocation / idiom / register /
+  key-term / interpretation uncertainties must be checked against the
+  target-language dictionary). Without NotebookLM, 哈士奇 uses ordinary
+  dictionary routes: local/offline dictionaries plus online dictionaries /
+  corpora. Source-language dictionary lookup is at 哈士奇's discretion (not
+  forced, not forbidden); source meaning / boundary / allusion / concept / fact
+  may be confirmed via web under the normal source-boundary rules, without
+  overriding user/source/context authority or adding unsupported meaning. The
+  哈基米 / Gemini-Web NotebookLM rule below applies only when 哈基米 (Gemini Web)
+  is explicitly named as the first baton.
 - 哈基米 / Gemini Web first baton must use the target-language NotebookLM
   dictionary when one is available. For uncertain translation choices
   (vocabulary, collocation, idiom, register, key terms, or important
