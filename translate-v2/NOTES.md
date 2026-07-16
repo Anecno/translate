@@ -854,11 +854,11 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   不顺口（破坏语感/节奏/口气/停顿/成品感），允许保留不删——顺口/成品感优先于机械去赘。
   判据仍是目标语成品感与朗读流畅，非"能删就删、删到最少"。
 
-## 2026-07-17 Runtime Guardrail: 联动项目翻译 — 本地成员开项目目录 + 译前上下文照做
+## 2026-07-17 Runtime Guardrail: 《古董局中局》联动翻译 — 本地成员开目录 + 译前上下文照做
 
-- 当翻译任务与某个长篇项目联动（如《古董局中局》Antique Game Within Game），有本地
+- 当翻译任务与《古董局中局》（Antique Game Within Game）联动时，有本地
   文件访问能力的成员（当前默认链里的哈士奇 / 小D / Codex / Qoder）应在 prompt 里拿到
-  该项目的稿件写作目录与知识库目录，供其随意阅读、更好理解剧情与上下文。
+  该书的稿件写作目录与知识库目录，供其随意阅读、更好理解剧情与上下文。
 - 无本地文件访问的成员（如小克 = claude.ai web Claude）拿不到目录，只能靠 prompt 内
   嵌文本 + 译前上下文包的梳理。
 - 小D 的译前上下文步骤不因本地成员能自读目录而省略：既有状态机（小D 从本地证据起草
