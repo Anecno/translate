@@ -15,7 +15,7 @@
 > - Web Relay chain: 哈基米 → 小D → 小克 → 小G → Qoder; Codex remains conductor,
 >   not a hidden sixth baton.
 > - 哈基米 first-baton target-language dictionary rule: when a target-language
->   NotebookLM dictionary exists, check target-language usage there first; source
+>   local dictionary library exists, check target-language usage there first; source
 >   understanding may use ordinary web search only for real source ambiguity; no
 >   dictionary/search result may override source text, user constraints, project
 >   context, terminology, or author intent.
