@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from pathlib import Path
 
@@ -29,6 +30,150 @@ ARTIFACT_TYPES = {
 
 def missing_required(text: str, checks: list[tuple[str, list[str]]]) -> list[str]:
     return [name for name, needles in checks if not has_any(text, needles)]
+
+
+# --- Member-aware relay safeguards: first-baton dictionary + fifth-baton web-access ---
+# The reference relay chain hands a translation across five models in series. The
+# first baton looks up the target-language dictionary before rendering; the fifth
+# baton runs web-access research into the source- and target-language sites that
+# other models cannot easily reach (README notes 2 and 4). These two safeguards
+# keep the dictionary and web-access steps visible and enforceable. The member
+# names below are this workflow's aliases — adapt them to your own lineup. Both
+# checks fire only when an artifact actually targets the relevant baton, so a
+# lineup that renames or drops these members simply stops triggering them.
+RELAY_MEMBERS = ["哈基米", "哈士奇", "Qoder", "逗比", "小D", "小克", "小G", "Codex", "包子", "老D", "CC"]
+FIRST_BATON_MEMBERS = ["哈士奇", "哈基米"]
+FIFTH_BATON_MEMBERS = ["Qoder", "逗比"]
+FIFTH_BATON_CHAINS = [
+    "哈士奇 -> 小D -> 小克 -> Codex -> Qoder",
+    "哈士奇→小D→小克→Codex→Qoder",
+    "哈士奇 -> 小D -> 小克 -> Codex -> 逗比",
+    "哈士奇→小D→小克→Codex→逗比",
+    "哈基米 -> 小D -> 小克 -> 小G -> Qoder",
+    "哈基米→小D→小克→小G→Qoder",
+]
+
+
+def detect_target_member(text: str) -> str | None:
+    """Best-effort read of the artifact's target member from its first line/title."""
+    stripped = text.strip()
+    if not stripped:
+        return None
+    first = stripped.splitlines()[0]
+    match = re.search(r"(?:prompt|baton-raw|baton)\s*[—\-·:]\s*([^/·\n]{1,24})", first, re.IGNORECASE)
+    segment = (match.group(1) if match else first[:64]).lower()
+    for member in RELAY_MEMBERS:
+        if member.lower() in segment:
+            return member
+    return None
+
+
+def first_baton_dictionary_missing(text: str) -> list[str]:
+    """Require first-baton prompts to carry the target-language dictionary contract.
+
+    The first baton specializes in target-language dictionary lookup — through a
+    local dictionary library, or a target-language NotebookLM notebook when that
+    is the first baton. Adapt the member names / dictionary route to your setup.
+    """
+    if detect_target_member(text) not in FIRST_BATON_MEMBERS:
+        return []
+    missing: list[str] = []
+    if not has_any(
+        text,
+        ["target-language dictionary", "target language dictionary", "目标语词典", "目标语言词典", "目标语种词典"],
+    ):
+        missing.append("prompt:first-baton-target-language-dictionary-missing")
+    if not has_any(text, ["local dictionary library", "本地词典库", "notebooklm", "dictionary", "词典"]):
+        missing.append("prompt:first-baton-dictionary-route-missing")
+    if not has_any(text, ["priority", "mandatory", "must", "优先", "必查", "每一处"]):
+        missing.append("prompt:first-baton-dictionary-mandatory-missing")
+    if not (
+        has_any(text, ["does not answer", "cannot find", "not found", "查不到", "找不到"])
+        and has_any(text, ["web search", "ordinary search", "联网搜索", "普通搜索"])
+    ):
+        missing.append("prompt:first-baton-web-search-fallback-missing")
+    if not has_any(
+        text,
+        ["source-language dictionary", "source language dictionary", "源语词典", "源语言词典"],
+    ):
+        missing.append("prompt:first-baton-source-language-dictionary-anti-rule-missing")
+    if not (
+        has_any(
+            text,
+            ["list all", "list every lookup", "complete lookup log", "dictionary check record",
+             "逐项", "列全", "全量", "词典检查记录"],
+        )
+        and has_any(text, ["not_found", "not found", "cannot_verify", "查不到"])
+    ):
+        missing.append("prompt:first-baton-no-lazy-full-lookup-log-missing")
+    return missing
+
+
+def fifth_baton_web_access_missing(text: str, prefix: str) -> list[str]:
+    """Require the fifth baton (web-access baton) to run and fully report research.
+
+    The fifth baton is equipped with web access and digs into source- and
+    target-language sites, including hard-to-reach real-user/social platforms,
+    that other models cannot easily reach. The fifth baton may be any of the
+    FIFTH_BATON_MEMBERS; the contract is identical whichever one is dispatched.
+    Adapt the member names to your setup.
+    """
+    member = detect_target_member(text)
+    # A prompt/raw is one member's artifact; a non-fifth target only cites the
+    # fifth baton as N-1/N-2 context and is not bound by this contract.
+    if prefix in ("prompt", "baton-raw") and member is not None and member not in FIFTH_BATON_MEMBERS:
+        return []
+    member_is_fifth = member in FIFTH_BATON_MEMBERS
+    fifth_context = has_any(text, ["Qoder", "逗比"]) and has_any(
+        text, ["fifth baton", "5th baton", "第五棒", "final web-access baton", "R1B5", "R2B5"]
+    )
+    chain_context = has_any(text, FIFTH_BATON_CHAINS)
+    if not (member_is_fifth or fifth_context or chain_context):
+        return []
+
+    missing: list[str] = []
+    if prefix == "baton-raw":
+        # The raw is the fifth baton's answer: judge whether research actually
+        # happened, not whether it restated the instruction wording.
+        url_count = len(re.findall(r"https?://", text))
+        has_research_log = has_any(
+            text, ["research log", "检索记录", "研究记录", "web-access", "web access", "web search"]
+        )
+        if url_count < 3 and not has_research_log:
+            missing.append("baton-raw:fifth-baton-web-access-evidence-missing")
+        if not has_any(
+            text,
+            ["小红书", "小紅書", "social platform", "real-user", "reddit", "twitter", "x.com",
+             "weibo", "微博", "知乎", "pixiv", "note.com", "掲示板", "bbs", "quora"],
+        ):
+            missing.append("baton-raw:fifth-baton-hard-to-access-platforms-missing")
+        if not has_any(text, ["not_found", "not found", "cannot_verify", "查不到", "无法核验"]):
+            missing.append("baton-raw:fifth-baton-not-found-cannot-verify-marker-missing")
+        if url_count < 3 and not has_any(
+            text, ["url", "source note", "evidence", "来源", "证据", "检索记录", "research log"]
+        ):
+            missing.append("baton-raw:fifth-baton-source-evidence-log-missing")
+        return missing
+
+    if not has_any(text, ["web-access", "web access"]):
+        missing.append(f"{prefix}:fifth-baton-web-access-required-missing")
+    if not (
+        has_any(text, ["source-language", "source language", "源文语种", "原文语种"])
+        and has_any(text, ["target-language", "target language", "目标语种", "目标语"])
+    ):
+        missing.append(f"{prefix}:fifth-baton-source-and-target-language-search-missing")
+    if not has_any(
+        text, ["hard-to-reach", "hard to reach", "小红书", "social platform", "real-user", "不好上的网站"]
+    ):
+        missing.append(f"{prefix}:fifth-baton-hard-to-access-platforms-missing")
+    if not (
+        has_any(text, ["comprehensive", "every disputed", "all disputed", "逐项", "全量", "查全"])
+        and has_any(text, ["list all", "full research log", "complete record", "列全", "写全", "完整记录"])
+    ):
+        missing.append(f"{prefix}:fifth-baton-no-lazy-full-search-and-report-missing")
+    if not has_any(text, ["not_found", "not found", "cannot_verify", "查不到", "无法核验"]):
+        missing.append(f"{prefix}:fifth-baton-not-found-cannot-verify-marker-missing")
+    return missing
 
 
 def english_only_surface_missing(text: str, prefix: str) -> list[str]:
@@ -91,6 +236,8 @@ def prompt_package_missing(text: str) -> list[str]:
     missing.extend(flat_scores_missing(text, "prompt:"))
     missing.extend(na_without_reason_missing(text, "prompt:"))
     missing.extend(english_only_surface_missing(text, "prompt"))
+    missing.extend(first_baton_dictionary_missing(text))
+    missing.extend(fifth_baton_web_access_missing(text, "prompt"))
     return missing
 
 
@@ -107,6 +254,7 @@ def baton_raw_missing(text: str) -> list[str]:
     missing.extend(flat_scores_missing(text, "baton:"))
     missing.extend(na_without_reason_missing(text, "baton:"))
     missing.extend(english_only_surface_missing(text, "baton"))
+    missing.extend(fifth_baton_web_access_missing(text, "baton-raw"))
     return missing
 
 
@@ -128,6 +276,7 @@ def round_archive_missing(text: str) -> list[str]:
     missing = missing_required(text, checks)
     missing.extend(flat_scores_missing(text, "round:"))
     missing.extend(na_without_reason_missing(text, "round:"))
+    missing.extend(fifth_baton_web_access_missing(text, "round-archive"))
     return missing
 
 
