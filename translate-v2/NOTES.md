@@ -857,7 +857,7 @@ This file is public-maintained and should not be overwritten by upstream syncs w
 ## 2026-07-17 Runtime Guardrail: 《古董局中局》联动翻译 — 本地成员开目录 + 译前上下文照做
 
 - 当翻译任务与《古董局中局》（Antique Game Within Game）联动时，有本地
-  文件访问能力的成员（当前默认链里的哈士奇 / 小D / Codex / Qoder）应在 prompt 里拿到
+  文件访问能力的成员（当前默认链里的哈士奇 / 小D / Codex / Qoder / 逗比）应在 prompt 里拿到
   该书的稿件写作目录与知识库目录，供其随意阅读、更好理解剧情与上下文。
 - 无本地文件访问的成员（如小克 = claude.ai web Claude）拿不到目录，只能靠 prompt 内
   嵌文本 + 译前上下文包的梳理。

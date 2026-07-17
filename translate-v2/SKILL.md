@@ -220,11 +220,27 @@ Default runtime channel:
   Codex re-enters the chain as the fourth relay-baton member (writing a
   translation + review like any baton) and no longer holds the conductor slot;
   the conductor is `CC`, who writes the prompt for the user to relay, and no
-  relay member (哈士奇/小D/小克/Codex/Qoder) doubles as conductor. `小克` =
+  relay member (哈士奇/小D/小克/Codex/Qoder/逗比) doubles as conductor. `小克` =
   claude.ai web Claude = the only member without local file access (distinct
   from `CC`, the conductor). `小G` and `包子` leave the ordinary default chain
   and may appear only as rejected/deprecated history unless the user explicitly
   names them. Manual relay remains the only mode.
+- **2026-07-17 fifth-baton choice — `Qoder` or `逗比`, the user names which per
+  round:** the fifth relay baton (the web-access deep-verification baton) may be
+  either `Qoder` (Qoder IDE) or `逗比` (Doubao on TRAE, which has local file
+  access and the `web-access` skill). The canonical chain is therefore
+  `哈士奇 -> 小D -> 小克 -> Codex -> {Qoder | 逗比}`. Different rounds of the same
+  translation task may use a different fifth baton; when dispatching the fifth
+  baton each round, the user explicitly names which one, and the prompt's baton
+  order line names that concrete member (`... -> Codex -> Qoder` or
+  `... -> Codex -> 逗比`). Whichever member is named, the fifth-baton web-access
+  no-lazy research contract is identical: use the `web-access` route/skill; cover
+  source-language and target-language sources including hard-to-reach
+  real-user/social platforms such as 小红书; enumerate every disputed segment
+  checked; mark misses as NOT_FOUND / CANNOT_VERIFY; and list the full research
+  record. Because `逗比` has local file access, a `逗比` fifth-baton prompt also
+  carries the self-write filing instruction (unique filename, no overwrite)
+  exactly like `Qoder`.
 - **2026-07-17 first-baton dictionary duty (哈士奇, supersedes the 哈基米/NotebookLM
   rule below for the current default chain):** the first baton is now `哈士奇`
   (Gemini CLI), which does NOT carry NotebookLM, but its dictionary duty is the
