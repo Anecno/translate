@@ -209,11 +209,9 @@ Default runtime channel:
   synthesis unless the user explicitly asks Codex to participate as a member.
   包子 exits
   the ordinary default chain unless the user explicitly names it for a task.
-  Current Part1-09 R1 is a transitional exception: the already archived 老D
-  R1B2 is not voided and may be used as N-1 for 小克 with capability caveats.
   Old `哈基米 -> 小D -> 小克 -> 小G -> Qoder` and
   `哈基米 -> 小D -> 小克 -> 包子 -> 小G` may appear only as rejected/deprecated
-  history or the explicitly marked current R1 exception.
+  history.
 - **User correction on 2026-07-17 supersedes all of the above as the current
   default relay chain: `哈士奇 -> 小D -> 小克 -> Codex -> Qoder`.** The first baton
   is now `哈士奇` (Gemini CLI, local, no NotebookLM), not `哈基米` (Gemini Web).

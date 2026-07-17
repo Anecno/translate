@@ -275,6 +275,54 @@ final output requires user confirmation.
     assert "TRANSLATE_V2_ARTIFACT_LINT_STATUS=OK" in result.stdout
 
 
+def antique_prompt_ok_text() -> str:
+    return """
+# Prompt — Antique relay
+principles first / translation principles.
+source language: zh. target language: ja.
+N-1 and N-2 previous baton context.
+This is an Antique Game Within Game / 《古董局中局》 task: give the local-access members the manuscript chapters directory and the knowledge-base (references) roots to read for story context.
+Source-boundary: the manuscript and knowledge base are background for understanding only, not source text to translate; do not leak them into the translation.
+scores.language
+scores.literary
+scores.cultural
+aggregate
+raw capture requires full output.
+round archive with round summary.
+checkpoint: wait for user.
+final output requires user confirmation.
+"""
+
+
+def test_antique_linkage_ok() -> None:
+    result = run_lint("prompt-package", antique_prompt_ok_text())
+    assert result.returncode == 0, result.stdout
+    assert "TRANSLATE_V2_ARTIFACT_LINT_STATUS=OK" in result.stdout
+
+
+def test_antique_linkage_blocks_missing_project_roots() -> None:
+    result = run_lint(
+        "prompt-package",
+        """
+# Prompt — Antique relay
+principles first / translation principles.
+source language: zh. target language: ja.
+N-1 and N-2 previous baton context.
+This is a 《古董局中局》 task. Source-boundary: project context is background for understanding, not source text to translate.
+scores.language
+scores.literary
+scores.cultural
+aggregate
+raw capture requires full output.
+round archive with round summary.
+checkpoint: wait for user.
+final output requires user confirmation.
+""",
+    )
+    assert result.returncode == 2
+    assert "prompt:antique-linkage-project-roots-missing" in result.stdout
+
+
 if __name__ == "__main__":
     test_prompt_package_blocks_missing_contract()
     test_prompt_package_ok()
@@ -289,4 +337,6 @@ if __name__ == "__main__":
     test_fifth_baton_prompt_blocks_missing_web_access()
     test_baton_raw_blocks_fifth_baton_lazy()
     test_non_target_prompt_not_bound_by_member_contracts()
+    test_antique_linkage_ok()
+    test_antique_linkage_blocks_missing_project_roots()
     print("artifact lint tests passed")

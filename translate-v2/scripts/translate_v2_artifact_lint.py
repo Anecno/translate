@@ -176,6 +176,38 @@ def fifth_baton_web_access_missing(text: str, prefix: str) -> list[str]:
     return missing
 
 
+# The workflow can be linked to a companion fiction project (here: Antique Game
+# Within Game / 《古董局中局》). This is the *general* linkage safeguard only — the
+# project-boundary rule that any linked task must satisfy. Task-specific gates
+# (a particular chapter, character, cover-title, or line-by-line pass) are NOT
+# part of the public skill; keep those in your own private setup. Adapt the
+# project name to your own linked project.
+ANTIQUE_GAME_MARKERS = ["《古董局中局》", "Antique Game Within Game", "Antique Game"]
+
+
+def antique_game_linkage_missing(text: str) -> list[str]:
+    """When a prompt is for a linked companion-project (Antique Game Within Game)
+    translation, require the general linkage safeguards: local-access members are
+    given the manuscript and knowledge-base roots to read for story context, and
+    a source-boundary rule keeps that project context out of the translation
+    itself (background for understanding, never extra source text)."""
+    if not has_any(text, ANTIQUE_GAME_MARKERS):
+        return []
+    missing: list[str] = []
+    if not (
+        has_any(text, ["manuscript", "chapter directory", "chapters", "稿件", "写作区", "手稿"])
+        and has_any(text, ["knowledge base", "knowledge-base", "references", "知识库", "kb root"])
+    ):
+        missing.append("prompt:antique-linkage-project-roots-missing")
+    if not has_any(
+        text,
+        ["source-boundary", "source boundary", "not source text", "not extra source",
+         "background for understanding", "背景理解", "不得倒灌", "背景，不是"],
+    ):
+        missing.append("prompt:antique-linkage-source-boundary-missing")
+    return missing
+
+
 def english_only_surface_missing(text: str, prefix: str) -> list[str]:
     missing: list[str] = []
     for line_no, line in non_code_lines(text):
@@ -238,6 +270,7 @@ def prompt_package_missing(text: str) -> list[str]:
     missing.extend(english_only_surface_missing(text, "prompt"))
     missing.extend(first_baton_dictionary_missing(text))
     missing.extend(fifth_baton_web_access_missing(text, "prompt"))
+    missing.extend(antique_game_linkage_missing(text))
     return missing
 
 
