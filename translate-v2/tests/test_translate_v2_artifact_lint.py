@@ -146,7 +146,7 @@ source language: ja. target language: en.
 N-1 and N-2 previous baton context.
 The target-language dictionary is priority and mandatory for every uncertainty; use the local dictionary library (and a NotebookLM notebook when available). Dictionary lookup is required.
 If the target-language dictionary does not answer, fall back to ordinary web search.
-Do not substitute the source-language dictionary for the target-language dictionary.
+The source-language dictionary and the web are unrestricted; consult them freely when helpful.
 List all lookups in a complete lookup log (dictionary check record); mark misses as NOT_FOUND.
 scores.language
 scores.literary
@@ -196,7 +196,7 @@ def test_first_baton_prompt_blocks_missing_dictionary() -> None:
             "",
         )
         .replace("If the target-language dictionary does not answer, fall back to ordinary web search.", "")
-        .replace("Do not substitute the source-language dictionary for the target-language dictionary.", "")
+        .replace("The source-language dictionary and the web are unrestricted; consult them freely when helpful.", "")
         .replace(
             "List all lookups in a complete lookup log (dictionary check record); mark misses as NOT_FOUND.",
             "",
@@ -204,6 +204,35 @@ def test_first_baton_prompt_blocks_missing_dictionary() -> None:
     )
     assert result.returncode == 2
     assert "prompt:first-baton-target-language-dictionary-missing" in result.stdout
+
+
+def test_first_baton_prompt_blocks_source_dictionary_restriction() -> None:
+    text = (
+        first_baton_prompt_ok_text()
+        + "\nDo not substitute the source-language dictionary for the target-language dictionary.\n"
+    )
+    result = run_lint("prompt-package", text)
+    assert result.returncode == 2
+    assert "prompt:first-baton-source-language-dictionary-restriction-forbidden" in result.stdout
+
+
+def test_prompt_blocks_n2_reference_only() -> None:
+    text = (
+        first_baton_prompt_ok_text()
+        + "\nN-2 = the Codex baton (same as the previous reviewer, inherited verbatim).\n"
+    )
+    result = run_lint("prompt-package", text)
+    assert result.returncode == 2
+    assert "prompt:relay-n2-full-translation-block-missing" in result.stdout
+
+
+def test_prompt_ok_with_n2_full_block() -> None:
+    text = (
+        first_baton_prompt_ok_text()
+        + "\nN-2 = the Codex baton — full translation block reproduced below.\n"
+    )
+    result = run_lint("prompt-package", text)
+    assert "prompt:relay-n2-full-translation-block-missing" not in result.stdout
 
 
 def test_fifth_baton_prompt_ok() -> None:

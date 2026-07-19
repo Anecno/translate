@@ -92,11 +92,23 @@ def first_baton_dictionary_missing(text: str) -> list[str]:
         and has_any(text, ["web search", "ordinary search", "联网搜索", "普通搜索"])
     ):
         missing.append("prompt:first-baton-web-search-fallback-missing")
-    if not has_any(
+    # The source-language dictionary is NOT restricted. The first baton may freely consult
+    # source-language / bilingual dictionaries and the web; flag prompts that wrongly forbid
+    # or "do not substitute" it. (An earlier revision required such an anti-rule to be present,
+    # which was itself the misreading being corrected here.)
+    if has_any(
         text,
-        ["source-language dictionary", "source language dictionary", "源语词典", "源语言词典"],
+        [
+            "do not substitute the source-language dictionary",
+            "do not use the source-language dictionary",
+            "不得查源语词典",
+            "不要查源语词典",
+            "不许查源语词典",
+            "禁止查源语词典",
+            "不得用源语词典替代",
+        ],
     ):
-        missing.append("prompt:first-baton-source-language-dictionary-anti-rule-missing")
+        missing.append("prompt:first-baton-source-language-dictionary-restriction-forbidden")
     if not (
         has_any(
             text,
@@ -107,6 +119,24 @@ def first_baton_dictionary_missing(text: str) -> list[str]:
     ):
         missing.append("prompt:first-baton-no-lazy-full-lookup-log-missing")
     return missing
+
+
+def relay_n2_full_block_missing(text: str) -> list[str]:
+    """Require a declared N-2 window to carry the full previous-baton translation.
+
+    The N-1/N-2 label check only verifies that the labels appear. A prompt that assigns an
+    N-2 baton (``N-2 = ...``) must also include that baton's full translation block, not a
+    one-line "same as ..." reference, so the next baton can actually evaluate it.
+    """
+    if not re.search(r"n-?2\s*[＝=]", text, re.IGNORECASE):
+        return []
+    if not re.search(
+        r"n-?2[^\n]{0,40}(full translation|complete translation|完整译文|完整候选)",
+        text,
+        re.IGNORECASE,
+    ):
+        return ["prompt:relay-n2-full-translation-block-missing"]
+    return []
 
 
 def fifth_baton_web_access_missing(text: str, prefix: str) -> list[str]:
@@ -269,6 +299,7 @@ def prompt_package_missing(text: str) -> list[str]:
     missing.extend(na_without_reason_missing(text, "prompt:"))
     missing.extend(english_only_surface_missing(text, "prompt"))
     missing.extend(first_baton_dictionary_missing(text))
+    missing.extend(relay_n2_full_block_missing(text))
     missing.extend(fifth_baton_web_access_missing(text, "prompt"))
     missing.extend(antique_game_linkage_missing(text))
     return missing
