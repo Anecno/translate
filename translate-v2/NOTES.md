@@ -145,6 +145,29 @@ This file is public-maintained and should not be overwritten by upstream syncs w
   or treat it as subordinate to Chinese source text. This section is later KB
   backfill input, but the primary capture point is before 小D prepares the
   `译前上下文包`.
+- 2026-07-23 story-point capture rule: whenever the user supplies a story point
+  during a 《古董局中局》 translation task, write it into the companion skill's
+  knowledge base in the same turn. "Story point" is read broadly: plot fact,
+  background truth, character relation or motive, knowledge boundary,
+  terminology or address-term ruling, translation ruling, tense/register/style
+  decision, author correction, object or clue detail, timeline fix. Do not defer
+  the write to the next formal chapter ingestion, to the end of the relay, or to
+  the final `Translation-report.md`. If the same turn also dispatches a baton,
+  land the knowledge-base entry first, so the outgoing prompt can cite an
+  in-knowledge-base source instead of an unverifiable claim. The usual
+  knowledge-base write gates still apply in full: reverse-search the canonical
+  home, decide add/merge/split, state the full-file matrix, verify the wording
+  against its source verbatim rather than paraphrasing it, attach a status
+  label, and mark the knowledge boundary so conductor-only background is never
+  leaked into a baton prompt. Rationale: prompts get overwritten and scratch
+  files get cleaned, so the knowledge base is the only carrier that survives
+  across sessions; a ruling that lives only in the conversation will be
+  re-derived, and usually re-derived wrongly, by the next session's prep helper.
+  This rule generalizes the bilingual capture point above from English reference
+  points to every story point, and upgrades the action from "extract it into the
+  prep prompt" to "also write it into the knowledge base". It replaces any
+  earlier practice of recording such material only during formal chapter
+  ingestion.
 - Every artifact type that presents a candidate or final translation must use
   the full syntax/morphology minimum from `spec-v0.3.12.md`, not a title-only
   placeholder: sentence overview, approximate literal back-translation,
