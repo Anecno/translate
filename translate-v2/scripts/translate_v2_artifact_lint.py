@@ -55,16 +55,35 @@ FIFTH_BATON_CHAINS = [
 
 
 def detect_target_member(text: str) -> str | None:
-    """Best-effort read of the artifact's target member from its first line/title."""
+    """Best-effort read of the artifact's target member from its title or header block.
+
+    Raw-capture drops conventionally lead with a provenance line (such as
+    ``captured_utc:``) and carry the identity line (``member:`` / a ``raw ...:`` label)
+    a few lines below, so a first-line-only read would miss it and mis-fire the
+    fifth-baton contract on a non-fifth self-filed drop. When the first line yields
+    nothing, scan the header block — up to the first blank line, capped — for an
+    explicit identity field. Only the metadata block is scanned, never the body, so an
+    N-1/N-2 citation in prose is not mistaken for the target member.
+    """
     stripped = text.strip()
     if not stripped:
         return None
-    first = stripped.splitlines()[0]
+    lines = stripped.splitlines()
+    first = lines[0]
     match = re.search(r"(?:prompt|baton-raw|baton)\s*[—\-·:]\s*([^/·\n]{1,24})", first, re.IGNORECASE)
     segment = (match.group(1) if match else first[:64]).lower()
     for member in RELAY_MEMBERS:
         if member.lower() in segment:
             return member
+    for line in lines[1:12]:
+        if not line.strip():
+            break
+        field = re.match(r"\s*(?:member|成员|raw[\s\w]{0,8})\s*[:：]\s*([^/·\n]{1,24})", line, re.IGNORECASE)
+        if field:
+            segment = field.group(1).lower()
+            for member in RELAY_MEMBERS:
+                if member.lower() in segment:
+                    return member
     return None
 
 

@@ -352,6 +352,48 @@ final output requires user confirmation.
     assert "prompt:antique-linkage-project-roots-missing" in result.stdout
 
 
+def test_baton_raw_provenance_header_non_fifth_not_bound() -> None:
+    # A self-filed raw leads with a provenance line (captured_utc) and carries its
+    # identity on the next line. A non-fifth member (Codex) that merely cites the fifth
+    # baton as N-1 context must not be bound by the web-access contract, even though the
+    # member name is not on the first line. (Regression: a first-line-only member read
+    # returned None here and mis-fired the fifth-baton contract.)
+    result = run_lint(
+        "baton-raw",
+        """
+captured_utc: 2026-01-01T00:00:00Z
+member: Codex
+relay stage baton.
+N-1 = Qoder R1B5 previous baton context.
+full output.
+candidate translation.
+review and reason.
+convergence and satisfaction.
+""",
+    )
+    assert "baton-raw:fifth-baton-web-access-evidence-missing" not in result.stdout
+    assert "fifth-baton-web-access-required" not in result.stdout
+
+
+def test_baton_raw_provenance_header_fifth_still_gated() -> None:
+    # The header scan must not let a real fifth baton slip the contract: a Qoder raw
+    # behind a provenance header with no research evidence is still blocked.
+    result = run_lint(
+        "baton-raw",
+        """
+captured_utc: 2026-01-01T00:00:00Z
+member: Qoder R1B5
+relay stage baton.
+full output.
+candidate translation.
+review and reason.
+convergence and satisfaction.
+""",
+    )
+    assert result.returncode == 2
+    assert "baton-raw:fifth-baton-web-access-evidence-missing" in result.stdout
+
+
 if __name__ == "__main__":
     test_prompt_package_blocks_missing_contract()
     test_prompt_package_ok()
@@ -365,6 +407,8 @@ if __name__ == "__main__":
     test_fifth_baton_prompt_ok()
     test_fifth_baton_prompt_blocks_missing_web_access()
     test_baton_raw_blocks_fifth_baton_lazy()
+    test_baton_raw_provenance_header_non_fifth_not_bound()
+    test_baton_raw_provenance_header_fifth_still_gated()
     test_non_target_prompt_not_bound_by_member_contracts()
     test_antique_linkage_ok()
     test_antique_linkage_blocks_missing_project_roots()
