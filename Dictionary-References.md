@@ -36,7 +36,7 @@ This translation project uses the following reference works. This document will 
 
 ## ភាសាខ្មែរ
 
-- *A Dictionary of Pre-Angkorian Khmer*
+- *A Dictionary of pre-Angkorian Khmer*
 - *A Dictionary of Angkorian Khmer*
 - *A Dictionary of Middle Khmer*
 - «សទ្ទានុក្រម បច្ចេកសព្ទខ្មែរ»
