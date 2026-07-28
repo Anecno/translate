@@ -39,3 +39,4 @@ This translation project uses the following reference works. This document will 
 - *A Dictionary of Pre-Angkorian Khmer*
 - *A Dictionary of Angkorian Khmer*
 - *A Dictionary of Middle Khmer*
+- *Lexicon of Khmer Terminology* (Lexicon KH)
