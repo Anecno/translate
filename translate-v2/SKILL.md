@@ -223,6 +223,26 @@ Default runtime channel:
   from `CC`, the conductor). `小G` and `包子` leave the ordinary default chain
   and may appear only as rejected/deprecated history unless the user explicitly
   names them. Manual relay remains the only mode.
+- **2026-08-13 first-baton choice — `哈士奇` or `老马`, the user names which per
+  round (same mechanism as the fifth baton):** the first relay baton may be
+  either `哈士奇` (Antigravity CLI, local) or `老马` (xAI Grok Build CLI, local,
+  with file access). The canonical chain is therefore
+  `{哈士奇 | 老马} -> 小D -> 小克 -> Codex -> {Qoder | 逗比}`, so all four
+  combinations are valid. Different rounds of the same translation task may use a
+  different first baton; when dispatching the first baton each round, the user
+  explicitly names which one, and the prompt's baton order line names that
+  concrete member (`哈士奇 -> 小D -> ...` or `老马 -> 小D -> ...`). Whichever
+  member is named, the first-baton dictionary contract is identical: the
+  target-language dictionary is priority and mandatory on every baton; no lazy
+  lookup and no lazy listing; a complete lookup record with NOT_FOUND /
+  CANNOT_VERIFY for misses; source-language dictionary lookup explicitly
+  permitted; and never prescribe which dictionary format or path the member
+  should use. Because `老马` has local file access, an `老马` first-baton prompt
+  also carries the self-write filing instruction (unique filename, no overwrite)
+  exactly like `哈士奇`. The gate constant `FIRST_BATON_MEMBERS` in
+  `scripts/translate_v2_artifact_lint.py` enforces this on whichever first baton
+  is dispatched and exempts non-first-baton members identically. Rename the
+  members to match your own setup.
 - **2026-07-17 fifth-baton choice — `Qoder` or `逗比`, the user names which per
   round:** the fifth relay baton (the web-access deep-verification baton) may be
   either `Qoder` (Qoder IDE) or `逗比` (Doubao on TRAE, which has local file

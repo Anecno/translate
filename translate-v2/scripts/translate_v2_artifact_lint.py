@@ -41,14 +41,22 @@ def missing_required(text: str, checks: list[tuple[str, list[str]]]) -> list[str
 # names below are this workflow's aliases — adapt them to your own lineup. Both
 # checks fire only when an artifact actually targets the relevant baton, so a
 # lineup that renames or drops these members simply stops triggering them.
-RELAY_MEMBERS = ["哈基米", "哈士奇", "Qoder", "逗比", "小D", "小克", "小G", "Codex", "包子", "老D", "CC"]
-FIRST_BATON_MEMBERS = ["哈士奇", "哈基米"]
+RELAY_MEMBERS = ["哈基米", "哈士奇", "老马", "Qoder", "逗比", "小D", "小克", "小G", "Codex", "包子", "老D", "CC"]
+# The first baton is a choice between two members, named per round by the user
+# (same mechanism as the fifth baton). The dictionary contract below is identical
+# whichever one is dispatched. Rename these to match your own setup.
+FIRST_BATON_MEMBERS = ["哈士奇", "老马", "哈基米"]
 FIFTH_BATON_MEMBERS = ["Qoder", "逗比"]
 FIFTH_BATON_CHAINS = [
     "哈士奇 -> 小D -> 小克 -> Codex -> Qoder",
     "哈士奇→小D→小克→Codex→Qoder",
     "哈士奇 -> 小D -> 小克 -> Codex -> 逗比",
     "哈士奇→小D→小克→Codex→逗比",
+    # First baton is also a two-way choice, so all four combinations are valid.
+    "老马 -> 小D -> 小克 -> Codex -> Qoder",
+    "老马→小D→小克→Codex→Qoder",
+    "老马 -> 小D -> 小克 -> Codex -> 逗比",
+    "老马→小D→小克→Codex→逗比",
     "哈基米 -> 小D -> 小克 -> 小G -> Qoder",
     "哈基米→小D→小克→小G→Qoder",
 ]
@@ -93,6 +101,10 @@ def first_baton_dictionary_missing(text: str) -> list[str]:
     The first baton specializes in target-language dictionary lookup — through a
     local dictionary library, or a target-language NotebookLM notebook when that
     is the first baton. Adapt the member names / dictionary route to your setup.
+
+    The first baton is a per-round choice between two members (see
+    FIRST_BATON_MEMBERS). The contract is enforced identically on whichever one
+    is dispatched, and non-first-baton members are exempted identically.
     """
     if detect_target_member(text) not in FIRST_BATON_MEMBERS:
         return []

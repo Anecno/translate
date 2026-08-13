@@ -206,6 +206,33 @@ def test_first_baton_prompt_blocks_missing_dictionary() -> None:
     assert "prompt:first-baton-target-language-dictionary-missing" in result.stdout
 
 
+def test_first_baton_alternate_member_prompt_ok() -> None:
+    """The first baton is a per-round choice; the alternate member is bound identically."""
+    result = run_lint(
+        "prompt-package",
+        first_baton_prompt_ok_text().replace("哈士奇 R1B1", "老马 R1B1"),
+    )
+    assert result.returncode == 0, result.stdout
+    assert "TRANSLATE_V2_ARTIFACT_LINT_STATUS=OK" in result.stdout
+
+
+def test_first_baton_alternate_member_blocks_missing_dictionary() -> None:
+    """Dropping the dictionary contract must block the alternate first baton too."""
+    result = run_lint(
+        "prompt-package",
+        first_baton_prompt_ok_text()
+        .replace("哈士奇 R1B1", "老马 R1B1")
+        .replace(
+            "The target-language dictionary is priority and mandatory for every uncertainty;"
+            " use the local dictionary library (and a NotebookLM notebook when available)."
+            " Dictionary lookup is required.",
+            "Translate it.",
+        ),
+    )
+    assert result.returncode != 0, result.stdout
+    assert "first-baton" in result.stdout or "dictionary" in result.stdout
+
+
 def test_first_baton_prompt_blocks_source_dictionary_restriction() -> None:
     text = (
         first_baton_prompt_ok_text()
