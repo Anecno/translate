@@ -223,7 +223,38 @@ Default runtime channel:
   from `CC`, the conductor). `小G` and `包子` leave the ordinary default chain
   and may appear only as rejected/deprecated history unless the user explicitly
   names them. Manual relay remains the only mode.
-- **2026-08-13 first-baton choice — `哈士奇` or `老马`, the user names which per
+- **2026-08-27 all-baton naming — the user names every baton, per round. This
+  supersedes every "default chain" rule above and below.** There is no default
+  relay chain any more. For each round the user explicitly names who runs each of
+  the five batons, drawn from the whole roster (`哈基米` / `哈士奇` / `老马` /
+  `小D` / `小克` / `小G` / `Codex` / `Qoder` / `逗比` / `包子` / `老D` ...;
+  rename these to match your own lineup). The prompt's baton-order line must
+  spell out that round's concrete five members. What the two-way first-baton and
+  fifth-baton rules below said about "the user names which one per round" now
+  applies to all five positions.
+  **The duties stay bound to the position, not to the person.** Whoever is named
+  first baton carries the identical target-language dictionary contract; whoever
+  is named fifth baton carries the identical web-access deep-verification
+  contract. Neither contract changed in content — only the question "does this
+  contract apply here?" changed, from "is this member on the shortlist?" to "is
+  this artifact the Nth baton?". The conductor is still `CC`, and is never a
+  baton.
+  Rationale worth copying if you run a mixed lineup: pay-per-use API members cost
+  real money per round while subscription members do not, so the operator needs
+  to re-shuffle who stands where from round to round. Any rule that pins a duty
+  to a fixed member blocks that, which is why the safeguards were rewritten to
+  key on position.
+  `scripts/translate_v2_artifact_lint.py` implements this: `detect_baton_position`
+  reads the baton number from the artifact's own identity surface (its title line
+  and header identity fields — never from the body, where an `N-1 = <member> R1B5`
+  citation would otherwise drag the position off), and both safeguards fire on
+  position rather than on a member shortlist. `parse_baton_order` validates a
+  baton-order line structurally: at least four arrows, every segment resolving to
+  a roster member, table rows and long prose segments rejected.
+- ⚠️ Superseded on 2026-08-27 as to *who* may be named (now the whole roster);
+  the dictionary contract itself stands unchanged, now bound to the first
+  position.
+  **2026-08-13 first-baton choice — `哈士奇` or `老马`, the user names which per
   round (same mechanism as the fifth baton):** the first relay baton may be
   either `哈士奇` (Antigravity CLI, local) or `老马` (xAI Grok Build CLI, local,
   with file access). The canonical chain is therefore
@@ -243,6 +274,9 @@ Default runtime channel:
   `scripts/translate_v2_artifact_lint.py` enforces this on whichever first baton
   is dispatched and exempts non-first-baton members identically. Rename the
   members to match your own setup.
+- ⚠️ Superseded on 2026-08-27 as to *who* may be named (now the whole roster);
+  the web-access contract itself stands unchanged, now bound to the fifth
+  position.
 - **2026-07-17 fifth-baton choice — `Qoder` or `逗比`, the user names which per
   round:** the fifth relay baton (the web-access deep-verification baton) may be
   either `Qoder` (Qoder IDE) or `逗比` (Doubao on TRAE, which has local file

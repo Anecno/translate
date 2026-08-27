@@ -421,6 +421,80 @@ convergence and satisfaction.
     assert "baton-raw:fifth-baton-web-access-evidence-missing" in result.stdout
 
 
+def test_first_baton_contract_binds_any_named_member() -> None:
+    """Every baton is named per round, so the contract follows the position, not a name.
+
+    A member that was never on the old first-baton shortlist still carries the full
+    dictionary contract the moment it is named first baton.
+    """
+    result = run_lint(
+        "prompt-package",
+        first_baton_prompt_ok_text()
+        .replace("哈士奇 R1B1", "小克 R1B1")
+        .replace(
+            "The target-language dictionary is priority and mandatory for every uncertainty;"
+            " use the local dictionary library (and a NotebookLM notebook when available)."
+            " Dictionary lookup is required.",
+            "Translate it.",
+        ),
+    )
+    assert result.returncode != 0, result.stdout
+    assert "first-baton" in result.stdout
+
+
+def test_first_baton_contract_exempts_same_member_at_another_position() -> None:
+    """The same member at a middle position must not be asked for the first-baton contract."""
+    result = run_lint(
+        "prompt-package",
+        first_baton_prompt_ok_text()
+        .replace("哈士奇 R1B1", "哈士奇 R2B3")
+        .replace(
+            "The target-language dictionary is priority and mandatory for every uncertainty;"
+            " use the local dictionary library (and a NotebookLM notebook when available)."
+            " Dictionary lookup is required.",
+            "Translate it.",
+        ),
+    )
+    assert result.returncode == 0, result.stdout
+
+
+def test_fifth_baton_contract_binds_any_named_member() -> None:
+    """Whoever is named fifth baton carries the web-access contract, shortlist or not."""
+    result = run_lint(
+        "prompt-package",
+        fifth_baton_prompt_ok_text()
+        .replace("Qoder R1B5", "小D R1B5")
+        .replace(
+            "Use the web-access route/skill for the fifth-baton research pass;"
+            " cover source-language and target-language sites, including hard-to-reach"
+            " real-user platforms such as 小红书.",
+            "",
+        ),
+    )
+    assert result.returncode == 2, result.stdout
+    assert "fifth-baton" in result.stdout
+
+
+def test_fifth_baton_contract_exempts_same_member_at_another_position() -> None:
+    """A former fifth-baton member standing at the fourth position is not bound.
+
+    This is the concrete mis-fire the position rule removes: the contract used to follow
+    the member name, so this prompt was wrongly asked for web-access research.
+    """
+    result = run_lint(
+        "prompt-package",
+        fifth_baton_prompt_ok_text()
+        .replace("Qoder R1B5", "逗比 R1B4")
+        .replace(
+            "Use the web-access route/skill for the fifth-baton research pass;"
+            " cover source-language and target-language sites, including hard-to-reach"
+            " real-user platforms such as 小红书.",
+            "",
+        ),
+    )
+    assert result.returncode == 0, result.stdout
+
+
 if __name__ == "__main__":
     test_prompt_package_blocks_missing_contract()
     test_prompt_package_ok()
@@ -439,4 +513,8 @@ if __name__ == "__main__":
     test_non_target_prompt_not_bound_by_member_contracts()
     test_antique_linkage_ok()
     test_antique_linkage_blocks_missing_project_roots()
+    test_first_baton_contract_binds_any_named_member()
+    test_first_baton_contract_exempts_same_member_at_another_position()
+    test_fifth_baton_contract_binds_any_named_member()
+    test_fifth_baton_contract_exempts_same_member_at_another_position()
     print("artifact lint tests passed")

@@ -41,25 +41,112 @@ def missing_required(text: str, checks: list[tuple[str, list[str]]]) -> list[str
 # names below are this workflow's aliases — adapt them to your own lineup. Both
 # checks fire only when an artifact actually targets the relevant baton, so a
 # lineup that renames or drops these members simply stops triggering them.
+# Every baton is named per round by the user, so there is no fixed chain to compare
+# against and no member whitelist per position. The roster below is only used to read a
+# baton-order line and to identify an artifact's target member; rename it to your lineup.
 RELAY_MEMBERS = ["哈基米", "哈士奇", "老马", "Qoder", "逗比", "小D", "小克", "小G", "Codex", "包子", "老D", "CC"]
-# The first baton is a choice between two members, named per round by the user
-# (same mechanism as the fifth baton). The dictionary contract below is identical
-# whichever one is dispatched. Rename these to match your own setup.
-FIRST_BATON_MEMBERS = ["哈士奇", "老马", "哈基米"]
-FIFTH_BATON_MEMBERS = ["Qoder", "逗比"]
-FIFTH_BATON_CHAINS = [
-    "哈士奇 -> 小D -> 小克 -> Codex -> Qoder",
-    "哈士奇→小D→小克→Codex→Qoder",
-    "哈士奇 -> 小D -> 小克 -> Codex -> 逗比",
-    "哈士奇→小D→小克→Codex→逗比",
-    # First baton is also a two-way choice, so all four combinations are valid.
-    "老马 -> 小D -> 小克 -> Codex -> Qoder",
-    "老马→小D→小克→Codex→Qoder",
-    "老马 -> 小D -> 小克 -> Codex -> 逗比",
-    "老马→小D→小克→Codex→逗比",
-    "哈基米 -> 小D -> 小克 -> 小G -> Qoder",
-    "哈基米→小D→小克→小G→Qoder",
-]
+# Match longest name first so a short alias cannot win inside a longer one.
+ROSTER_BY_LENGTH = sorted(RELAY_MEMBERS, key=len, reverse=True)
+BATON_ARROW_SPLIT = re.compile(r"\s*(?:->|→|=>)\s*")
+CN_BATON_NUMERALS = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7, "八": 8}
+
+
+def match_roster_member(segment: str) -> str | None:
+    """Find a roster member inside one baton-order segment, allowing decorations."""
+    lowered = segment.lower()
+    for member in ROSTER_BY_LENGTH:
+        if member.lower() in lowered:
+            return member
+    return None
+
+
+def parse_baton_order(text: str) -> list[str] | None:
+    """Read the explicit baton-order line: a chain of arrows whose every segment is a member.
+
+    With every baton named per round there is no canonical chain string to match, so the
+    order line is validated structurally instead. Two guards keep prose from impersonating
+    an order line: a line must carry at least four arrows (so an inline ``N-1 = X → Y``
+    citation does not qualify), and each segment must be short (a real order line reads
+    ``baton order: A -> B -> ...``, never a paragraph). Markdown table rows are skipped
+    because review tables routinely quote an old chain verbatim.
+    """
+    best: list[str] | None = None
+    for raw in text.splitlines():
+        line = raw.strip()
+        if line.startswith("|"):
+            continue
+        if line.count("->") + line.count("→") + line.count("=>") < 4:
+            continue
+        segments = [seg for seg in BATON_ARROW_SPLIT.split(line) if seg.strip()]
+        if len(segments) < 5:
+            continue
+        members: list[str] = []
+        for segment in segments:
+            member = match_roster_member(segment) if len(segment.strip()) <= 30 else None
+            if member is None:
+                members = []
+                break
+            members.append(member)
+        if members and (best is None or len(members) > len(best)):
+            best = members
+    return best
+
+
+IDENTITY_FIELD = re.compile(
+    r"\s*(?:member|成员|agent|baton|棒次|round|relay[_\s]?stage|raw\s*capture|raw\s*落档)\s*[:：]",
+    re.IGNORECASE,
+)
+
+
+def identity_lines(text: str) -> str:
+    """The artifact's own identity surface: its title line plus header identity fields.
+
+    Baton stamps are only read from here, never from the body. A raw capture legitimately
+    writes ``N-1 = <member> R1B5`` in its prose, and reading that as the artifact's own
+    position would bind a middle baton to the fifth-baton contract.
+    """
+    stripped = text.strip()
+    if not stripped:
+        return ""
+    lines = stripped.splitlines()
+    picked = [lines[0]]
+    for line in lines[1:12]:
+        if not line.strip():
+            break
+        if IDENTITY_FIELD.match(line):
+            picked.append(line)
+    return "\n".join(picked)
+
+
+def detect_baton_position(text: str) -> int | None:
+    """Read which baton this artifact is (1..5), or None when it cannot be determined.
+
+    Both safeguards are bound to a position rather than to a member name, so the position
+    has to be read first, and it is read only from the artifact's identity surface. A bare
+    "first baton" phrase is deliberately NOT accepted: review artifacts quote other batons
+    that way. When the position cannot be read, callers fall back to conservative behaviour
+    rather than guessing, since mis-assigning a contract is worse than not applying one.
+    """
+    head = identity_lines(text)
+    stamp = re.search(r"r\d+b(\d)\b", head, re.IGNORECASE)
+    if stamp:
+        return int(stamp.group(1))
+    cn = re.search(r"第([一二三四五六七八九十\d])棒", head)
+    if cn:
+        token = cn.group(1)
+        return int(token) if token.isdigit() else CN_BATON_NUMERALS.get(token)
+    ordinal = re.search(r"(first|second|third|fourth|fifth)\s+baton", head, re.IGNORECASE)
+    if ordinal:
+        return ["first", "second", "third", "fourth", "fifth"].index(ordinal.group(1).lower()) + 1
+    field = re.search(r"(?:baton|棒次)\s*[:：]\s*#?\s*r?\d*b?(\d)", head, re.IGNORECASE)
+    if field:
+        return int(field.group(1))
+    order = parse_baton_order(text)
+    if order:
+        member = detect_target_member(text)
+        if member in order:
+            return order.index(member) + 1
+    return None
 
 
 def detect_target_member(text: str) -> str | None:
@@ -102,11 +189,11 @@ def first_baton_dictionary_missing(text: str) -> list[str]:
     local dictionary library, or a target-language NotebookLM notebook when that
     is the first baton. Adapt the member names / dictionary route to your setup.
 
-    The first baton is a per-round choice between two members (see
-    FIRST_BATON_MEMBERS). The contract is enforced identically on whichever one
-    is dispatched, and non-first-baton members are exempted identically.
+    Every baton is named per round by the user, so this contract is bound to the first
+    *position*, not to a list of members: whoever is named first baton carries it, and every
+    other position is exempted identically.
     """
-    if detect_target_member(text) not in FIRST_BATON_MEMBERS:
+    if detect_baton_position(text) != 1:
         return []
     missing: list[str] = []
     if not has_any(
@@ -175,22 +262,27 @@ def fifth_baton_web_access_missing(text: str, prefix: str) -> list[str]:
 
     The fifth baton is equipped with web access and digs into source- and
     target-language sites, including hard-to-reach real-user/social platforms,
-    that other models cannot easily reach. The fifth baton may be any of the
-    FIFTH_BATON_MEMBERS; the contract is identical whichever one is dispatched.
-    Adapt the member names to your setup.
+    that other models cannot easily reach. Every baton is named per round by the user,
+    so this contract is bound to the fifth *position*, not to a list of members.
     """
-    member = detect_target_member(text)
-    # A prompt/raw is one member's artifact; a non-fifth target only cites the
-    # fifth baton as N-1/N-2 context and is not bound by this contract.
-    if prefix in ("prompt", "baton-raw") and member is not None and member not in FIFTH_BATON_MEMBERS:
-        return []
-    member_is_fifth = member in FIFTH_BATON_MEMBERS
-    fifth_context = has_any(text, ["Qoder", "逗比"]) and has_any(
-        text, ["fifth baton", "5th baton", "第五棒", "final web-access baton", "R1B5", "R2B5"]
+    position = detect_baton_position(text)
+    identity = identity_lines(text)
+    fifth_signal = bool(re.search(r"r\d+b5\b", identity, re.IGNORECASE)) or has_any(
+        identity, ["fifth baton", "5th baton", "第五棒", "final web-access baton"]
     )
-    chain_context = has_any(text, FIFTH_BATON_CHAINS)
-    if not (member_is_fifth or fifth_context or chain_context):
-        return []
+    if prefix in ("prompt", "baton-raw"):
+        # A prompt/raw is one member's artifact. When the position is readable, only the
+        # fifth is bound; when it is not, require an explicit fifth-baton signal in the
+        # title, or a middle baton citing the last one as N-1 would be wrongly bound.
+        if position is not None:
+            if position != 5:
+                return []
+        elif not fifth_signal:
+            return []
+    else:
+        # A round archive covers all five batons, so context signals still gate it.
+        if not (fifth_signal or parse_baton_order(text) is not None):
+            return []
 
     missing: list[str] = []
     if prefix == "baton-raw":
