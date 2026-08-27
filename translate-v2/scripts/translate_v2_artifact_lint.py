@@ -60,6 +60,14 @@ def match_roster_member(segment: str) -> str | None:
     return None
 
 
+def strip_label(segment: str) -> str:
+    """Drop a leading label (``baton order:`` and the like) so only the member part is measured.
+
+    Real order lines carry a long prefix on the first segment, which a flat length cap would
+    reject outright, killing a perfectly valid order line.
+    """
+    return re.split(r"[:：]", segment)[-1].strip()
+
 def parse_baton_order(text: str) -> list[str] | None:
     """Read the explicit baton-order line: a chain of arrows whose every segment is a member.
 
@@ -82,7 +90,8 @@ def parse_baton_order(text: str) -> list[str] | None:
             continue
         members: list[str] = []
         for segment in segments:
-            member = match_roster_member(segment) if len(segment.strip()) <= 30 else None
+            core = strip_label(segment)
+            member = match_roster_member(segment) if (len(core) <= 30 and len(segment.strip()) <= 60) else None
             if member is None:
                 members = []
                 break
