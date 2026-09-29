@@ -495,6 +495,38 @@ def test_fifth_baton_contract_exempts_same_member_at_another_position() -> None:
     assert result.returncode == 0, result.stdout
 
 
+
+def workbuddy_order_line_prompt(text: str) -> str:
+    """Retitle the fifth-baton fixture so the position can only be read from the order line."""
+    return (
+        text.replace("# Prompt — Qoder R1B5 fifth baton", "# Prompt — WorkBuddy")
+        + "Baton order: 哈士奇 -> 小D -> 小克 -> 小G -> WorkBuddy\n"
+    )
+
+
+def test_fifth_baton_contract_binds_member_named_only_in_order_line() -> None:
+    """A member who is fifth only by the order line must still carry the web-access contract.
+
+    If the roster misses that member, the order line cannot be read, the position stays
+    unknown, and a lazy fifth-baton prompt slips through.
+    """
+    result = run_lint(
+        "prompt-package",
+        workbuddy_order_line_prompt(fifth_baton_prompt_ok_text()).replace(
+            "Use the web-access route/skill for the fifth-baton research pass;"
+            " cover source-language and target-language sites, including hard-to-reach"
+            " real-user platforms such as 小红书.",
+            "",
+        ),
+    )
+    assert result.returncode == 2, result.stdout
+    assert "fifth-baton" in result.stdout
+
+
+def test_fifth_baton_named_only_in_order_line_ok() -> None:
+    result = run_lint("prompt-package", workbuddy_order_line_prompt(fifth_baton_prompt_ok_text()))
+    assert result.returncode == 0, result.stdout
+
 if __name__ == "__main__":
     test_prompt_package_blocks_missing_contract()
     test_prompt_package_ok()
@@ -517,4 +549,6 @@ if __name__ == "__main__":
     test_first_baton_contract_exempts_same_member_at_another_position()
     test_fifth_baton_contract_binds_any_named_member()
     test_fifth_baton_contract_exempts_same_member_at_another_position()
+    test_fifth_baton_contract_binds_member_named_only_in_order_line()
+    test_fifth_baton_named_only_in_order_line_ok()
     print("artifact lint tests passed")

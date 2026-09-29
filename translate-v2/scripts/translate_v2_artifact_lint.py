@@ -44,7 +44,7 @@ def missing_required(text: str, checks: list[tuple[str, list[str]]]) -> list[str
 # Every baton is named per round by the user, so there is no fixed chain to compare
 # against and no member whitelist per position. The roster below is only used to read a
 # baton-order line and to identify an artifact's target member; rename it to your lineup.
-RELAY_MEMBERS = ["哈基米", "哈士奇", "老马", "Qoder", "逗比", "小D", "小克", "小G", "Codex", "包子", "老D", "CC"]
+RELAY_MEMBERS = ["哈基米", "哈士奇", "老马", "Qoder", "逗比", "小D", "小克", "小G", "Codex", "包子", "老D", "CC", "WorkBuddy"]
 # Match longest name first so a short alias cannot win inside a longer one.
 ROSTER_BY_LENGTH = sorted(RELAY_MEMBERS, key=len, reverse=True)
 BATON_ARROW_SPLIT = re.compile(r"\s*(?:->|→|=>)\s*")
